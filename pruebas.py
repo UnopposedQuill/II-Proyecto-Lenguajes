@@ -19,9 +19,9 @@ listaRecetas = []
 # Voy a hacer una consulta de todas las recetas
 
 # Por cada solución
-for solucion in prolog.query('receta(X, Y)'):
+for solution in prolog.query('receta(X, Y)'):
     # Agregar a los resultados
-    listaRecetas.append([solucion['X'].decode(), solucion['Y'].decode()])
+    listaRecetas.append([solution['X'].decode(), solution['Y'].decode()])
 
 # Imprimir Resultados
 print('Todas las recetas:')
@@ -39,9 +39,9 @@ prolog.assertz('recetas(Receta, Ingrediente):-' +
 listaRecetas = []
 
 # Por cada solución
-for solucion in prolog.query('recetas(X, Y)'):
+for solution in prolog.query('recetas(X, Y)'):
     # Agregar a los resultados
-    listaRecetas.append(solucion['X'].decode())
+    listaRecetas.append(solution['X'].decode())
     
 # Imprimir Resultados
 print('\nRecetas que tengan <Huevo> como ingrediente:')
