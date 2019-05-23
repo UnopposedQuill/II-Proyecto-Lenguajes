@@ -9,7 +9,7 @@ discontiguous listaPasos/2.
 /*
 Un wrapper de prolog para escribir nuevas cláusulas en la base de conocimientos
 */
-escribirClausula(Clausula):- 
+escribirClausula(Clausula):-
 	access_file('baseConocimientos.pl', append),
 	open('baseConocimientos.pl', append, Stream),
 	write_term(Stream, Clausula, [quoted=true, fullstop=true, nl=true]), close(Stream).
@@ -17,5 +17,7 @@ escribirClausula(Clausula):-
 /*
 Esta es la regla más importante, es la que permite hacer todas las búsquedas en la base de conocimientos.
 */
-recetas(Receta, Ingrediente, TipoReceta):- receta(Receta, TipoReceta), ingrediente(Ingrediente), ingredienteReceta(Ingrediente, Receta).
-
+recetas(Receta, Ingrediente, TipoReceta, ListaPasos, ListaImagenes):-
+	receta(Receta, TipoReceta), ingrediente(Ingrediente),
+	ingredienteReceta(Ingrediente, Receta), listaPasos(ListaPasos, Receta),
+	listaImagenes(ListaImagenes, Receta).
