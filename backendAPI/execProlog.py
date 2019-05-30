@@ -18,6 +18,11 @@ if __name__=="__main__":
     for ele in list(prologui.query(sys.argv[1])):
       loc = {};
       for it in range(2,len(sys.argv)):
-        loc[sys.argv[it]] = ele[sys.argv[it]].decode('utf-8','replace')
+        if(type(ele[sys.argv[it]])==list):
+          loc[sys.argv[it]] = [];
+          for par in ele[sys.argv[it]]:
+            loc[sys.argv[it]].append(par.decode('utf-8','replace'))
+        else:
+          loc[sys.argv[it]] = ele[sys.argv[it]].decode('utf-8','replace')
       data.append(loc);
     json.dump(data,outfile)
