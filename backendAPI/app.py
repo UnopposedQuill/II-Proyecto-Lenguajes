@@ -31,6 +31,7 @@ api = Api(app)
 """----------------------------------------------------------------------------"""
 class Recipe(Resource):
   def get(self):
+    #curl localhost:5000/recipe/info -dnombre="Name" -XGET
     """Retorna informacion de la  receta con el nombre
     { 'nombre' : nombreReceta,'tipo' : tipo,
       'ingrediente' : ['ing1','ing2',...],
@@ -56,7 +57,10 @@ class Recipe(Resource):
     return envio
 
   def put(self):
+    #curl localhost:5000/recipe/info -dnombre="nmbre" -dingrediente="ingreNuevo" -XPUT
+    #curl localhost:5000/recipe/info -dnombre="nmbre" -dpasos="paso1" -dpasos="paso2" .. -dpasos="pasoN" -XPUT
     """modifica la informacion de la receta con el nombre"""
+    """TODO: que no permita modificar recetas no existentes"""
     args = parserReceta.parse_args();
     if(args['nombre']==None): return {'message':'nombre es campo requrido'};
     nombre = args['nombre'];
@@ -71,6 +75,7 @@ class Recipe(Resource):
     return {}
 
   def post(self):
+    #curl localhost:5000/recipe/info -dnombre="nmbre" -dtipo="Tipo" -XPOST
     args = parserReceta.parse_args();
     if(args['nombre']==None or args['tipo']==None):
       return {'message':'nombre y tipo son requeridos'},891;
@@ -82,7 +87,8 @@ class Recipe(Resource):
 
 """----------------------------------------------------------------------------"""
 class Recipes(Resource):
-  def get(self):
+  def get(self): 
+    #curl localhost:5000/recipe -XGET
     """Retorna una lista de recetas"""
     PrologCallWRP('receta(X,Y)',['X','Y'])
     data = {}; envio = [];
