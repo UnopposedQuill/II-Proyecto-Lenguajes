@@ -19,3 +19,5 @@ Esta es la regla más importante, es la que permite hacer todas las búsquedas e
 */
 recetas(Receta, Ingrediente, TipoReceta):- receta(Receta, TipoReceta), ingrediente(Ingrediente), ingredienteReceta(Ingrediente, Receta).
 
+/*Esta regla retorna toda la informacion detallada de una receta*/
+infoReceta(R,I,T,P):-receta(R,T),findall(X,ingredienteReceta(X,R),I),findall(Y,listaPasos(Y,R),P).
