@@ -44,6 +44,7 @@ class Recipe(Resource):
     PrologCallWRP('infoReceta('+nombre+',I,T,P,L).',['I','T','P','L']);
     with open('data.json') as infile: data = json.load(infile);
     for receta in data:
+      print(receta);
       envio['ingrediente']=(receta['I']);
       envio['pasos']=(receta['P']);
       envio['tipo']=receta['T'];
@@ -139,6 +140,7 @@ class Filter(Resource):
     data = {}; envio={};
     with open('data.json') as infile: data=json.load(infile);
     for receta in data:
+      print(receta);
       nombre = args['nombre'];
       if(not nombre): nombre = receta['R'];
       loc = {};
