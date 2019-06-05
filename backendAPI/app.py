@@ -41,12 +41,13 @@ class Recipe(Resource):
     if(args['nombre']==None): return{'Error':'nombre es campo requerido'};
     nombre = '"'+args['nombre']+'"';
     data = {}; envio = {'nombre':nombre,'ingrediente':[],'paso':[]};
-    PrologCallWRP('infoReceta('+nombre+',I,T,P).',['I','T','P']);
+    PrologCallWRP('infoReceta('+nombre+',I,T,P,L).',['I','T','P','L']);
     with open('data.json') as infile: data = json.load(infile);
     for receta in data:
       envio['ingrediente']=(receta['I']);
-      envio['paso']=(receta['P']);
+      envio['pasos']=(receta['P']);
       envio['tipo']=receta['T'];
+      envio['imagenes']=receta['L'];
     return envio
 
   def put(self):

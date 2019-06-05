@@ -18,13 +18,14 @@ escribirClausula(Clausula):-
 Esta es la regla más importante, es la que permite hacer todas las búsquedas en la base de conocimientos.
 */
 recetas(Receta, Ingrediente, TipoReceta):- 
-%, ListaPasos, ListaImagenes):-
 	receta(Receta, TipoReceta), ingrediente(Ingrediente),
 	ingredienteReceta(Ingrediente, Receta).
-  /*, listaPasos(ListaPasos, Receta),
-	listaImagenes(ListaImagenes, Receta).
-*/
+
 /*Esta regla retorna toda la informacion detallada de una receta*/
 pasos([],[]).
 pasos(P,[P|_]).
-infoReceta(R,I,T,P):-receta(R,T),findall(X,ingredienteReceta(X,R),I),findall(Y,listaPasos(Y,R),N),pasos(P,N).
+infoReceta(R,I,T,P,L):-
+  receta(R,T),
+  findall(X,ingredienteReceta(X,R),I),
+  findall(Y,listaPasos(Y,R),N),pasos(P,N),
+  findall(Z,listaImagenes(Z,R),M),pasos(L,M).
