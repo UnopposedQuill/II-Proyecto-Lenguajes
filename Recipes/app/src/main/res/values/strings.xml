@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyBands</string>
+    <string name="app_name">Recetario</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -14,7 +14,7 @@
         emails."
         </string>
     <string name="title_activity_login">IniciarSesión</string>
-    <string name="new_client_label">¿Nuevo en MyBands?</string>
+    <string name="new_client_label">¿Nuevo en Recetario?</string>
     <string name="action_register">Registrarse</string>
 
     <!-- Strings related to register -->
@@ -26,5 +26,10 @@
 
     <!-- Strings related to Client's Home -->
     <string name="titleClientHome">Bienvenido</string>
+    <string name="agregar_receta">Agregar Receta</string>
+    <string name="buscar_receta">Buscar Receta</string>
+    <string name="listar_recetas">Listar Recetas</string>
+    <string name="title_activity_agregar_receta">agregarReceta</string>
+    <string name="agregar_receta">Agregar Receta</string>
 
 </resources>

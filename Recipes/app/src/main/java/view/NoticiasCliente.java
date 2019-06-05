@@ -38,23 +38,25 @@ public class NoticiasCliente extends AppCompatActivity {
         */
 
         //ahora el recycler view
-        this.mRecyclerView = (RecyclerView)findViewById(R.id.recyclerViewNoticias);
+        //this.mRecyclerView = (RecyclerView)findViewById(R.id.recyclerViewNoticias);
 
-        this.mRecyclerView.setHasFixedSize(true);//no me interesa que cambie de tamaño.
-
-        //necesito un manager de layout linear
-        this.mLayoutManager = new LinearLayoutManager(this);
-        this.mRecyclerView.setLayoutManager(this.mLayoutManager);//le digo al recycler view que utilice este
-
-        //ahora necesito el adaptador
-        ArrayList<Noticia> noticias = new ArrayList<>();//TODO: Sustituir esto por una búsqueda en la base de datos
-        noticias.add(new NoticiaAdministrador("Fecha del primer mantenimiento", "El primer mantenimiento se realizará el dd/MM/yyyy, durará mm minutos. Nos disculpamos por el inconveniente.", new Date(), new Administrador("administrador@mybands.com","probe","Administrador1")));
-        noticias.add(new NoticiaAdministrador("Primer Mantenimiento", "El sistema ya tiene su primer periódo de mantenimiento establecido, estén al tanto para la publicación de la misma.", new Date(), new Administrador("administrador@mybands.com","probe","Administrador1")));
-        noticias.add(new NoticiaArtista("Primer Disco", "Como bienvenida al sistema, les anunciamos que nuestro nuevo disco \"Recent Disadventure\" está ahora a la venta!", new Date(), new Artista("banda@mybands.com","hello","Banda1")));
-        noticias.add(new NoticiaAdministrador("Bienvenida", "Bienvenidos al nuevo sistema de MyBands.", new Date(), new Administrador("administrador@mybands.com","probe","Administrador1")));
-
-        //noticias.sort((noticia1, noticia2)->noticia1.getFechaPublicacion().getTime() < noticia2.getFechaPublicacion().getTime());
-        this.mAdapter = new AdaptadorNoticias(noticias);
-        this.mRecyclerView.setAdapter(this.mAdapter);
-    }
+//        this.mRecyclerView.setHasFixedSize(true);//no me interesa que cambie de tamaño.
+//
+//        //necesito un manager de layout linear
+//        this.mLayoutManager = new LinearLayoutManager(this);
+//        this.mRecyclerView.setLayoutManager(this.mLayoutManager);//le digo al recycler view que utilice este
+//
+//        //ahora necesito el adaptador
+//        //ahora necesito el adaptador
+//        //ahora necesito el adaptador
+//        ArrayList<Noticia> noticias = new ArrayList<>();//TODO: Sustituir esto por una búsqueda en la base de datos
+//        noticias.add(new NoticiaAdministrador("Fecha del primer mantenimiento", "El primer mantenimiento se realizará el dd/MM/yyyy, durará mm minutos. Nos disculpamos por el inconveniente.", new Date(), new Administrador("administrador@mybands.com","probe","Administrador1")));
+//        noticias.add(new NoticiaAdministrador("Primer Mantenimiento", "El sistema ya tiene su primer periódo de mantenimiento establecido, estén al tanto para la publicación de la misma.", new Date(), new Administrador("administrador@mybands.com","probe","Administrador1")));
+//        noticias.add(new NoticiaArtista("Primer Disco", "Como bienvenida al sistema, les anunciamos que nuestro nuevo disco \"Recent Disadventure\" está ahora a la venta!", new Date(), new Artista("banda@mybands.com","hello","Banda1")));
+//        noticias.add(new NoticiaAdministrador("Bienvenida", "Bienvenidos al nuevo sistema de MyBands.", new Date(), new Administrador("administrador@mybands.com","probe","Administrador1")));
+//
+//        //noticias.sort((noticia1, noticia2)->noticia1.getFechaPublicacion().getTime() < noticia2.getFechaPublicacion().getTime());
+//        this.mAdapter = new AdaptadorNoticias(noticias);
+//        this.mRecyclerView.setAdapter(this.mAdapter);
+      }
 }
