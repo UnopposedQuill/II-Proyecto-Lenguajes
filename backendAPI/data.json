@@ -1,1 +1,1 @@
-[{"I": "Chicken Produce", "T": "food"}, {"I": "FLOUR", "T": "food"}, {"I": "milk", "T": "food"}]
+[{"I": ["Chicken Produce", "FLOUR", "milk"], "T": "food", "P": ["Open chicken", "Crare blin", "Eat"], "L": []}]
