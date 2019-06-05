@@ -8,7 +8,7 @@
     tools:context=".RegisterActivity">
 
     <TextView
-        android:id="@+id/registerTitleTextView"
+        android:id="@+id/recipeCreationTitleTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:autofillHints=""
         android:ems="10"
-        android:hint="@string/prompt_name"
+        android:hint="@string/prompt_recipe_name"
         android:inputType="text" />
 
     <EditText
@@ -31,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="TIpo de Comida"
+        android:hint="@string/prompt_recipe_type"
         android:inputType="text" />
 
     <EditText
@@ -39,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Ingredientes" />
+        android:hint="@string/prompt_recipe_ingredients" />
 
     <EditText
         android:id="@+id/editText3"
@@ -50,20 +50,20 @@
         android:inputType="text" />
 
     <ImageView
-        android:id="@+id/setPicture"
+        android:id="@+id/pictures"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <ImageButton
-        android:id="@+id/imageButton_agregar_imagen_receta"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:srcCompat="@android:drawable/ic_menu_camera" />
+        android:layout_height="259dp" />
 
     <Button
-        android:id="@+id/button_register_activity"
+        android:id="@+id/boton_agregar_imagen"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/action_register" />
+        android:text="@string/addImage" />
+
+    <Button
+        android:id="@+id/button_create_recipe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/crear_receta" />
 
 </LinearLayout>

@@ -8,8 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import static java.sql.DriverManager.println;
-
 public class RegisterActivity extends AppCompatActivity {
 
     @Override
@@ -18,7 +16,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
 
-        Button registerButtonActivity = (Button) findViewById(R.id.button_register_activity);
+        Button registerButtonActivity = (Button) findViewById(R.id.button_crear_receta);
         final EditText registerName = (EditText)findViewById(R.id.name_register_activity);
         final EditText registerEmail = (EditText)findViewById(R.id.email_register_activity);
         final EditText registerPass = (EditText)findViewById(R.id.password_register_activity);

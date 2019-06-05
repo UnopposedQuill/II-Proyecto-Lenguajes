@@ -81,6 +81,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -211,14 +212,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         return email.contains("@");
     }
 
-    /*
-    Ya no es necesario en esta actividad
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
-    }
-    */
-
     /**
      * Shows the progress UI and hides the login form.
      */
@@ -328,12 +321,14 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
+            /*
             try {
                 // Simulate network access.
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 return false;
             }
+            */
 
             //Reviso todos los usuarios que conseguí de la base de datos, y los comparo respecto a las
             //credenciales conseguidas

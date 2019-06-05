@@ -1,11 +1,14 @@
 package view;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -28,7 +31,16 @@ public class NoticiasCliente extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_noticias_cliente);
 
-        //ahora importar los parámetros pasados por el llamador
+        final Button botonCrearReceta = (Button) findViewById(R.id.button_Agregar_Receta);
+
+        botonCrearReceta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), AgregarReceta.class);
+                startActivityForResult(intent, 100);
+            }
+        });
+        /*ahora importar los parámetros pasados por el llamador
         Bundle bundle = getIntent().getExtras();
         String correoUsuario = bundle.getString("correo");
 

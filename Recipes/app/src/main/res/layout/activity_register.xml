@@ -8,7 +8,7 @@
     tools:context=".RegisterActivity">
 
     <TextView
-        android:id="@+id/registerTitleTextView"
+        android:id="@+id/recipeCreationTitleTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -42,7 +42,7 @@
         android:inputType="textPassword" />
 
     <Button
-        android:id="@+id/button_register_activity"
+        android:id="@+id/button_crear_receta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/action_register" />
