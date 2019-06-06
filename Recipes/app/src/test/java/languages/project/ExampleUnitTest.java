@@ -1,4 +1,4 @@
-package requirements.software.musibeans.musibeans;
+package languages.project;
 
 import org.junit.Test;
 
