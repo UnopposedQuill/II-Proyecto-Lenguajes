@@ -83,10 +83,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         setContentView(R.layout.activity_login);
 
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mEmailView = findViewById(R.id.email);
         populateAutoComplete();
 
-        mPasswordView = (EditText) findViewById(R.id.password);
+        mPasswordView = findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -98,14 +98,14 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        Button mEmailSignInButton = findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
             }
         });
-        Button registerButton = (Button) findViewById(R.id.register_button);
+        Button registerButton = findViewById(R.id.register_button);
 
         registerButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -208,7 +208,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
+        //TODO: Reemplazar esto con una mejor lógica
         return email.contains("@");
     }
 
@@ -348,22 +348,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             showProgress(false);
 
             if (success) {
-                //finish();
                 //debo revisar a cuál actividad debo ir ahora.
                 switch(this.tipoUsuario){
-                    case ADMINISTRADOR:{
-                        Intent intento = new Intent(mLoginFormView.getContext(), AdministratorHome.class);
-                        //necesito pasar los parámetros del usuario, el más importante: el correo de la cuenta
-                        intento.putExtra("correo", mEmail);
-                        startActivityForResult(intento, 0);
-                        break;
-                    }
-                    case ARTISTA:{
-
-                        break;
-                    }
                     case CLIENTE:{
-                        Intent intento = new Intent(mLoginFormView.getContext(), NoticiasCliente.class);
+                        Intent intento = new Intent(mLoginFormView.getContext(), UserHome.class);
                         //necesito pasar los parámetros del usuario, el más importante: el correo de la cuenta
                         intento.putExtra("correo", mEmail);
                         startActivityForResult(intento, 0);

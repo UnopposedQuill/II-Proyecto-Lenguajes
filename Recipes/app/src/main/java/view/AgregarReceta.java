@@ -15,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -24,34 +25,49 @@ import android.widget.ImageView;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+
+import model.ImageAdapter;
 
 public class AgregarReceta extends AppCompatActivity {
 
-
+    //Nombre para los directorios de la aplicación
     private static final String TEMPORAL_PICTURE_NAME = "temp.jpg";
-    private static String APP_DIRECTORY = "MyPictureApp/";
-    private static String MEDIA_DIRECTORY = APP_DIRECTORY + "PictureApp";
+    private static String APP_DIRECTORY = "Recipes/";
+    private static String MEDIA_DIRECTORY = APP_DIRECTORY + "RecipesPhotos";
 
+    //Código para petición de uso de cámara, código para tomar una foto con cámara y código para
+    //tomar una foto de galería respectivamente
     private final int CAMERA_PERMISSION = 100;
     private final int PHOTO_CODE = 100;
     private final int SELECT_PICTURE = 200;
 
-    private ImageView imageView;
+    //Todos los Uri's de la receta actuales, estos apuntan a las imágenes que se van a subir
+    private ArrayList<Uri> image_paths;
 
-    private String mPath;
-
+    //El mostrador de imágenes de la interfaz así como su adaptador de las imágenes a ImageViews
+    private ViewPager image_shower;
+    private ImageAdapter image_adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_agregar_receta);
 
+        //primero creo el mostrador de imágenes
+        image_shower = findViewById(R.id.image_slider);
 
-        imageView = (ImageView) findViewById(R.id.pictures);
+        //Ahora el adaptador, encargadado de tomar las imágenes y convertirlas en algo que
+        //El mostrador pueda mostrar
+        image_adapter = new ImageAdapter();
+        image_shower.setAdapter(image_adapter);
 
-        final Button mOptionButton = (Button) findViewById(R.id.boton_agregar_imagen);
+        //Primero busco el botón de agregado de imágenes
+        final Button mAddImage = findViewById(R.id.boton_agregar_imagen);
 
-        mOptionButton.setOnClickListener(new View.OnClickListener() {
+        //Le agrego un listener tal que muestre un nuevo diálogo por defecto con 3 opciones desde
+        //las cuales se pueden tomar las nuevas imágenes
+        mAddImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final CharSequence[] options = {"Tomar foto", "Elegir de galeria", "Cancelar"};
@@ -76,7 +92,38 @@ public class AgregarReceta extends AppCompatActivity {
         });
     }
 
-    //@TODO: Arreglar, problema al crear el archivo donde se guardará la nueva imagen
+    /**
+     * Si la parte del listener donde se consigue la información de las imágenes fue exitosa,
+     * entonces viene aquí a ver de dónde es que tiene que tomar la información, pues hay dos sitios.
+     * @param requestCode El código que llama a esta función, puede ser Cámara o Foto de Galería
+     * @param resultCode El código de resultado, si fue exitoso, entonces hago todo
+     * @param data La información específica del intento
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        switch (requestCode) {
+            case PHOTO_CODE: {
+                if (resultCode == RESULT_OK) {
+                    String dir = Environment.getExternalStorageDirectory() + File.separator +
+                            MEDIA_DIRECTORY + File.separator + TEMPORAL_PICTURE_NAME;
+                    decodeBitmap(dir);
+                }
+                break;
+            }
+            case SELECT_PICTURE: {
+                if (resultCode == RESULT_OK) {
+                    Uri path = data.getData();
+                    ImageView imageView = new ImageView(this);
+                    imageView.setImageURI(path);
+                    image_adapter.addView(imageView);
+                    image_paths.add(path);
+                }
+                break;
+            }
+        }
+    }
+
+    //@TODO: Arreglar estas tres funciones, problema al crear el archivo donde se guardará la nueva imagen
     private void tomarFoto() {
 
         //Primero reviso si tengo los permisos necesarios para usar la cámara
@@ -116,27 +163,6 @@ public class AgregarReceta extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        switch (requestCode) {
-            case PHOTO_CODE: {
-                if (resultCode == RESULT_OK) {
-                    String dir = Environment.getExternalStorageDirectory() + File.separator +
-                            MEDIA_DIRECTORY + File.separator + TEMPORAL_PICTURE_NAME;
-                    decodeBitmap(dir);
-                }
-                break;
-            }
-            case SELECT_PICTURE: {
-                if (resultCode == RESULT_OK) {
-                    Uri path = data.getData();
-                    imageView.setImageURI(path);
-                }
-                break;
-            }
-        }
-    }
-
-    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case CAMERA_PERMISSION: {
@@ -165,17 +191,19 @@ public class AgregarReceta extends AppCompatActivity {
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(AgregarReceta.this, AgregarReceta.this.getPackageName() + ".provider", newFile));
                     //intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(newFile));
                     startActivityForResult(intent, PHOTO_CODE);
-
                 }
                 return;
             }
         }
     }
 
-    private void decodeBitmap(String dir) {
+    private void decodeBitmap(String path) {
         Bitmap bitmap;
-        bitmap = BitmapFactory.decodeFile(dir);
+        bitmap = BitmapFactory.decodeFile(path);
 
+        ImageView imageView = new ImageView(this);
         imageView.setImageBitmap(bitmap);
+        image_adapter.addView(imageView);
+        image_paths.add(Uri.parse(path));
     }
 }

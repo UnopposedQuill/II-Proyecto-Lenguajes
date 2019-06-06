@@ -20,7 +20,7 @@ import model.Noticia;
 import model.NoticiaAdministrador;
 import model.NoticiaArtista;
 
-public class NoticiasCliente extends AppCompatActivity {
+public class UserHome extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;//necesito un handle al recycler view para poder manejarlo
     private RecyclerView.LayoutManager mLayoutManager;

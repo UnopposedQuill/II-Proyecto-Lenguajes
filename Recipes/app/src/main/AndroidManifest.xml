@@ -28,9 +28,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".NoticiasCliente" />
-        <activity android:name=".AdministratorHome" />
-        <activity android:name=".NoticiasArtista" />
+        <activity android:name=".UserHome" />
         <activity android:name=".AgregarReceta" />
 
         <!-- Para manejo de archivos -->
