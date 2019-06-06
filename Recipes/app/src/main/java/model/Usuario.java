@@ -1,18 +1,16 @@
 package model;
 
-public abstract class Usuario {
+public class Usuario {
 
     private String nombre;
     private String email;
     private String contrasenha;
-    private TipoUsuario tipoUsuario;
 
 
-    public Usuario(String nombreUsuario, String contrasenha, String nombre, TipoUsuario tipoUsuario) {
-        this.email = nombreUsuario;
+    public Usuario(String email, String contrasenha, String nombre) {
+        this.email = email;
         this.contrasenha = contrasenha;
         this.nombre = nombre;
-        this.tipoUsuario = tipoUsuario;
     }
 
     public String getContrasenha() {
@@ -37,13 +35,5 @@ public abstract class Usuario {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public TipoUsuario getTipoUsuario() {
-        return tipoUsuario;
-    }
-
-    public void setTipoUsuario(TipoUsuario tipoUsuario) {
-        this.tipoUsuario = tipoUsuario;
     }
 }

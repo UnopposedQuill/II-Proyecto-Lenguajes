@@ -54,6 +54,9 @@ public class AgregarReceta extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_agregar_receta);
 
+        //Primero la lista de imágenes
+        image_paths = new ArrayList<>();
+
         //primero creo el mostrador de imágenes
         image_shower = findViewById(R.id.image_slider);
 

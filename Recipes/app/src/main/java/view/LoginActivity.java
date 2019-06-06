@@ -33,10 +33,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.Administrador;
-import model.Artista;
-import model.Cliente;
-import model.TipoUsuario;
 import model.Usuario;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -57,13 +53,12 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
      */
     private static final String[] DUMMY_CREDENTIALS = new String[]{
             //"foo@example.com:hello", "bar@example.com:world"
-            "banda@mybands.com:hello", "cliente@gmail.com:world", "administrador@mybands.com:probe"
+            "cliente@gmail.com:world", "abc@gmail.com:creza"
     };
 
     private static final Usuario[] DUMMY_USERS = {
-            new Artista("banda@mybands.com", "hello", "Banda1"),
-            new Administrador("administrador@mybands.com", "probe", "Admin1"),
-            new Cliente("cliente@gmail.com", "world", "Cliente1")
+            new Usuario("usuario@gmail.com", "world", "Usuario1"),
+            new Usuario("abc@gmail.com", "creza", "Usuario2")
     };
 
     /**
@@ -310,7 +305,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
         private final String mEmail;
         private final String mPassword;
-        private TipoUsuario tipoUsuario;//necesito guardar en algún sitio el tipo de usuario que inició sesión de manera exitosa
 
         UserLoginTask(String email, String password) {
             mEmail = email;
@@ -321,20 +315,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
-            /*
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-            */
-
             //Reviso todos los usuarios que conseguí de la base de datos, y los comparo respecto a las
             //credenciales conseguidas
             for(Usuario usuario: DUMMY_USERS){
                 if(usuario.getEmail().equals(this.mEmail) && usuario.getContrasenha().equals(this.mPassword)){
-                    this.tipoUsuario = usuario.getTipoUsuario();
                     return true;//las credenciales coincidieron con alguno
                 }
             }
@@ -348,19 +332,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             showProgress(false);
 
             if (success) {
-                //debo revisar a cuál actividad debo ir ahora.
-                switch(this.tipoUsuario){
-                    case CLIENTE:{
-                        Intent intento = new Intent(mLoginFormView.getContext(), UserHome.class);
-                        //necesito pasar los parámetros del usuario, el más importante: el correo de la cuenta
-                        intento.putExtra("correo", mEmail);
-                        startActivityForResult(intento, 0);
-                        break;
-                    }
-                    default:{
-                        mEmailView.setError(getString(R.string.error_invalid_email));//error desconocido
-                    }
-                }
+                Intent intento = new Intent(mLoginFormView.getContext(), UserHome.class);
+                //necesito pasar los parámetros del usuario, el más importante: el correo de la cuenta
+                intento.putExtra("correo", mEmail);
+                startActivityForResult(intento, 0);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
