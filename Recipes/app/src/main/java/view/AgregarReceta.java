@@ -81,8 +81,8 @@ public class AgregarReceta extends AppCompatActivity {
                         if (options[which].equals("Tomar foto")) {
                             tomarFoto();
                         } else if (options[which].equals("Elegir de galeria")) {
-                            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                            intent.setType("image/*");
+                            Intent intent = new Intent(Intent.ACTION_PICK);
+                            intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
                             startActivityForResult(intent.createChooser(intent, "Seleccionar App de Imagenees"), SELECT_PICTURE);
                         } else if (options[which].equals("Cancelar")) {
                             dialog.dismiss();
@@ -92,6 +92,28 @@ public class AgregarReceta extends AppCompatActivity {
                 builder.show();
             }
         });
+
+        //Ahora la funcionalidad de cancelar
+        final Button botonCancelar = findViewById(R.id.button_cancelar_creacion);
+
+        botonCancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        //finalmente la funcionalidad de agregar la receta como tal
+        final Button botonCrearReceta = findViewById(R.id.button_confirm_creation);
+
+        botonCrearReceta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //@TODO: Hacer que de verdad guarde la receta, primero las validaciones
+                finish();
+            }
+        });
+
     }
 
     /**

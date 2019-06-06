@@ -21,9 +21,6 @@
     <string name="register_title">Registro</string>>
     <string name="prompt_name">Nombre</string>
 
-    <!-- Strings related to Administrator's Home -->
-    <string name="administrator_home_title">Bienvenido</string>
-
     <!-- Strings related to Client's Home -->
     <string name="titleClientHome">Bienvenido</string>
     <string name="agregar_receta">Agregar Receta</string>
@@ -31,14 +28,26 @@
     <string name="listar_recetas">Listar Recetas</string>
     <string name="title_activity_agregar_receta">agregarReceta</string>
     <string name="agregar_receta_client">Agregar Receta</string>
+    <string name="logout">Cerrar Sesión</string>
 
-    <!-- Strings related to Recipe addition -->
+    <!-- Strings related to Recipe Addition Activity -->
     <string name="prompt_recipe_name">Nombre</string>
     <string name="prompt_recipe_type">Tipo</string>
     <string name="prompt_recipe_ingredients">Ingredientes</string>
     <string name="prompt_recipe_instructions">Instrucciones</string>
-    <string name="appDirectory">Recipes/</string>
     <string name="crear_receta">Crear Receta</string>
     <string name="addImage">Agregar Imagen</string>
+
+    <!-- Strings related to All Recipes Activity -->
+    <string name="all_title">Todas las Recetas</string>
+    <string name="previous">Anterior</string>
+    <string name="next">Siguiente</string>
+    <string name="place_holder">Placeholder</string>
+
+    <!-- Strings related to Recipe Detail Activity -->
+    <string name="detailed_title">Receta:</string>
+
+    <!-- Strings needed all along the project -->
+    <string name="go_back">Volver</string>
 
 </resources>
