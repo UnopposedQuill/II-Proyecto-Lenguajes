@@ -1,4 +1,5 @@
 Flask
 Flask-RESTful
 pyswip
+psycopg2
 gunicorn

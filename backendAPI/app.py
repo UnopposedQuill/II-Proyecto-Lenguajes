@@ -1,14 +1,19 @@
 """TODO:
-  Impleentar el get de recetas y receta independiente
   **Coneccion a sqlite/postgre -> login
   Aprender a escriir de manera decente
-  Conectar al prolog usando lode Paul
 """
+import random
+import string
+import os
+import psycopg2
 import json
 import sys
 import subprocess
 from flask import Flask
 from flask_restful import Resource, Api, reqparse
+
+DATABASE_URL = os.environ['DATABASE_URL']
+#DATABASE_URL = "postgres://gjdfftstillhri:f526e32b849bf31e858fd0ffb90ec477edb42888f3f4a3529165779c6cb7111e@ec2-50-19-114-27.compute-1.amazonaws.com:5432/dfeqo4r483r9kf"
 
 def PrologCallWRP(query,args): print(query); subprocess.call(['python3','execProlog.py',query]+args); return;
 
@@ -17,7 +22,9 @@ parserReceta = reqparse.RequestParser(); #parser del input
 parserReceta.add_argument('nombre');
 parserReceta.add_argument('tipo');
 parserReceta.add_argument('ingrediente');
+parserReceta.add_argument('ingredientes',action='append');
 parserReceta.add_argument('pasos',action='append');
+parserReceta.add_argument('imagen',action='append');
 parserReceta.add_argument('token',required=True);
 
 #parser para la informacion del login
@@ -27,6 +34,25 @@ parserLogin.add_argument('pass',required=True);
 
 app = Flask(__name__)
 api = Api(app)
+
+def hash(sttt):
+  s=0;
+  for lt in sttt:
+    s+=ord(lt)-ord('a');
+    s*=27;
+  return s%11;
+
+def CheckToken(token):
+  if(hash(token)>0): return False;
+  ret = False;
+  conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+  cur=conn.cursor();
+  cur.execute('select * from Users where "token"=%s',(token,));
+  if(cur.rowcount>0):
+    ret = True;
+  cur.close();
+  conn.close();
+  return ret;
 
 """----------------------------------------------------------------------------"""
 class Recipe(Resource):
@@ -38,18 +64,22 @@ class Recipe(Resource):
       'pasos' : [paso1, paso2, ...] }
     """
     args = parserReceta.parse_args();
+    if( not CheckToken(args['token']) ): return {'Error':'token invalido'};
     if(args['nombre']==None): return{'Error':'nombre es campo requerido'};
     nombre = '"'+args['nombre']+'"';
-    data = {}; envio = {'nombre':nombre,'ingrediente':[],'paso':[]};
+    data = {}; envio = {'nombre':args['nombre']};
     PrologCallWRP('infoReceta('+nombre+',I,T,P,L).',['I','T','P','L']);
+    existe=False;
     with open('data.json') as infile: data = json.load(infile);
     for receta in data:
+      existe=True;
       print(receta);
-      envio['ingrediente']=(receta['I']);
-      envio['pasos']=(receta['P']);
+      envio['ingrediente']=receta['I'];
+      envio['pasos']=receta['P'];
       envio['tipo']=receta['T'];
       envio['imagenes']=receta['L'];
-    return envio
+    if(existe): return envio;
+    else: return {'Error':'Receta invalida'},404;
 
   def put(self):
     #curl localhost:5000/recipe/info -dnombre="nmbre" -dingrediente="ingreNuevo" -XPUT
@@ -57,10 +87,12 @@ class Recipe(Resource):
     """modifica la informacion de la receta con el nombre"""
     """TODO: que no permita modificar recetas no existentes"""
     args = parserReceta.parse_args();
+    if( not CheckToken(args['token']) ): return {'Error':'token invalido'};
     if(args['nombre']==None): return {'message':'nombre es campo requrido'};
     nombre = args['nombre'];
-    ingre = args['ingrediente'];
+    ingre = args['ingredientes'];
     pasos = args['pasos'];
+    img = args['imagen'];
     
     """Check si la receta existe"""
     existe = False;
@@ -73,16 +105,23 @@ class Recipe(Resource):
     if not existe:
       return {'Error':'Receta no existente'};
     if(ingre!=None):
-      PrologCallWRP('escribirClausula(ingrediente("'+ingre+'")).',[]);
-      PrologCallWRP('escribirClausula(ingredienteReceta("'+ingre+'","'+nombre+'")).',[]);
+      for ing in ingre:
+        print(ing);
+        PrologCallWRP('escribirClausula(ingrediente("'+ing+'")).',[]);
+        PrologCallWRP('escribirClausula(ingredienteReceta("'+ing+'","'+nombre+'")).',[]);
     if(pasos!=None):
       lista = '["'+'","'.join(pasos)+'"]'
       PrologCallWRP('escribirClausula(listaPasos('+lista+',"'+nombre+'")).',[])
+    if(img):
+      for im in img: 
+        print(im);
+        PrologCallWRP('escribirClausula(listaImagenes("'+im+'","'+nombre+'")).',[]);
     return {'Message':'Receta modificada existosamente'};
 
   def post(self):
     #curl localhost:5000/recipe/info -dnombre="nmbre" -dtipo="Tipo" -XPOST
     args = parserReceta.parse_args();
+    if( not CheckToken(args['token']) ): return {'Error':'token invalido'};
     if(args['nombre']==None or args['tipo']==None):
       return {'message':'nombre y tipo son requeridos'},891;
     nombre = args['nombre']
@@ -95,7 +134,7 @@ class Recipe(Resource):
         if receta:
           existe = True;
     if existe:
-      return {'Error':'Receta ya existente'};
+      return {'Error':'Receta ya existente'},833;
     tipo = args['tipo']
     PrologCallWRP('escribirClausula(receta("'+nombre+'","'+tipo+'")).',[])
     return {nombre:tipo}
@@ -106,12 +145,13 @@ class Recipes(Resource):
   def get(self): 
     #curl localhost:5000/recipe -XGET
     """Retorna una lista de todas las recetas"""
+    args = parserReceta.parse_args();
+    if( not CheckToken(args['token']) ): return {'Error':'token invalido'};
     PrologCallWRP('receta(X,Y)',['X','Y'])
     data = {}; envio = [];
     with open('data.json') as infile: data = json.load(infile)
-    for receta in data: envio.append({'nombre' : receta['X'],'tipo': receta['Y']});
-    return {'receta':envio};
-
+    for receta in data: envio.append(receta['X']);
+    return {'recetas':envio};
 """----------------------------------------------------------------------------"""
 
 
@@ -119,6 +159,7 @@ class Recipes(Resource):
 class Filter(Resource):
   def get(self):
     args = parserReceta.parse_args();
+    if( not CheckToken(args['token']) ): return {'Error':'token invalido'};
     request='recetas(';
     query=[];
     if(args['nombre']):
@@ -137,24 +178,15 @@ class Filter(Resource):
       request=request+'T).';
       query+=['T'];
     PrologCallWRP(request,query);
-    data = {}; envio={};
+    data = {}; envio=[];
     with open('data.json') as infile: data=json.load(infile);
     for receta in data:
       print(receta);
-      nombre = args['nombre'];
-      if(not nombre): nombre = receta['R'];
-      loc = {};
-      if(not args['nombre']): loc['nombre']=receta['R'];
-      else: loc['nombre']=args['nombre']
-      if(not args['tipo']): loc['tipo']=receta['T'];
-      else: loc['tipo']=args['tipo'];
-      if(not args['ingrediente']): loc['ingrediente']=receta['I'];
-      else: loc['ingrediente']=args['ingrediente'];
-      print(loc);
-      """sobre escribe toda entrada anterior de la misma receta
-        otra opcion es un append, pero crea para una receta R tantas entradas como ingredientes tenga"""
-      envio[nombre]=loc;
-    return envio;
+      nombre = ""
+      if(not args['nombre']): nombre = receta['R'];
+      else: nombre = args['nombre'];
+      envio.append(nombre) if nombre not in envio else envio;
+    return {'result':envio};
 """----------------------------------------------------------------------------"""
 
 """----------------------------------------------------------------------------"""
@@ -163,11 +195,37 @@ class Login(Resource):
   def get(self):
     """retorna el token para un username|password existente, o eror en otro caso"""
     args = parserLogin.parse_args();
-    return {'I dont know you':'And I dont care to know you'};
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    cur=conn.cursor();
+    cur.execute('select token from users where "usuario"=%s and "passwd"=%s',(args['user'],args['pass']));
+    if(cur.rowcount==0):
+      cur.close();
+      conn.close();
+      return {'I dont know you':'And I dont care to know you'},404;
+    else:
+      token = cur.fetchone()[0];
+      cur.close();
+      conn.close();
+      return {'token':token},200;
+  
   def post(self):
     """crea un nuevo username|pass en la base, y retorna el token asignado"""
     args = parserLogin.parse_args();
-    return {'I dont know you':'And I dont care to know you'};
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    cur=conn.cursor();
+    cur.execute('select token from Users where "usuario"=%s',(args['user'],));
+    if(cur.rowcount>0):
+      cur.close();
+      conn.close();
+      return {'Error':'Cuenta ya existe'},456;
+    else:
+      token = ''.join(random.choices(string.ascii_lowercase, k=29));
+      token = token + chr(11-hash(token)+ord('a'))
+      cur.execute('insert into Users values(%s,%s,%s)',(args['user'],args['pass'],token));
+      conn.commit();
+      cur.close();
+      conn.close();
+      return {'token':token},201;
 """----------------------------------------------------------------------------"""
 
 """----------------------------------------------------------------------------"""
