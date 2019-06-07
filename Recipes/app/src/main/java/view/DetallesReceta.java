@@ -36,11 +36,10 @@ public class DetallesReceta extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalles_receta);
 
-
-
         //Primero consigo la información que vino junto con el intento
         String nombreReceta = getIntent().getExtras().getString("NOMBRE_RECETA", "NOT FOUND");
 
+        //@TODO: Hacer un objeto de Tipo Receta aquí a partir de una consulta con el nombre
         /*
         if(receta == null){
             System.err.println("No se le pasó ninguna receta al activity de detalle");

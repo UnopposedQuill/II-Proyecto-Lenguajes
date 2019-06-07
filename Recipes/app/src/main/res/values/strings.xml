@@ -33,10 +33,12 @@
     <!-- Strings related to Recipe Addition Activity -->
     <string name="prompt_recipe_name">Nombre</string>
     <string name="prompt_recipe_type">Tipo</string>
-    <string name="prompt_recipe_ingredients">Ingredientes</string>
-    <string name="prompt_recipe_instructions">Instrucciones</string>
+    <string name="prompt_recipe_ingredients">Ingrediente</string>
+    <string name="prompt_recipe_instructions">Instruccion</string>
     <string name="crear_receta">Crear Receta</string>
     <string name="addImage">Agregar Imagen</string>
+    <string name="addIngredient">Agregar Ingrediente</string>
+    <string name="addInstruction">Agregar Instrucción</string>
 
     <!-- Strings related to All Recipes Activity -->
     <string name="all_title">Todas las Recetas</string>
@@ -46,7 +48,6 @@
 
     <!-- Strings related to Recipe Detail Activity -->
     <string name="detailed_title">Receta:</string>
-
 
     <!-- Strings related to Recipe Searches Activity -->
     <string name="search_title">Búsquedas</string>
