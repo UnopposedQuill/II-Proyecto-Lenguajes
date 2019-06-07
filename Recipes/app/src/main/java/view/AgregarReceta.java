@@ -3,10 +3,12 @@ package view;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -25,13 +27,26 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import model.ImageAdapter;
+import model.ParameterStringBuilder;
+import model.Receta;
 
 public class AgregarReceta extends AppCompatActivity {
+
+    public static String PREFERENCES_FILE_NAME = "preferences.txt";
 
     //Nombre para los directorios de la aplicación
     private static final String TEMPORAL_PICTURE_NAME = "temp.jpg";
@@ -132,11 +147,29 @@ public class AgregarReceta extends AppCompatActivity {
         //Ahora la funcionalidad de agregar la receta como tal
         final Button botonCrearReceta = findViewById(R.id.button_confirm_creation);
 
+        //También necesito los editTexts
+        final EditText editTextNombre = findViewById(R.id.editTextNombre);
+        final EditText editTextTipo = findViewById(R.id.editTextTipo);
+
         botonCrearReceta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //@TODO: Hacer que de verdad guarde la receta, primero las validaciones
-                finish();
+                /*
+                Primero validar que haya ingredientes, instrucciones e imágenes, así como texto en el nombre
+                del ingrediente y en el tipo
+                */
+                if(image_adapter.getCount() > 0 && adaptadorStringsIngredientes.getItemCount() > 0 &&
+                        adaptadorStringsInstrucciones.getItemCount() > 0 &&
+                        !editTextNombre.getText().toString().equals("") &&
+                        !editTextTipo.getText().toString().equals("")){
+                    //Procedo a insertar
+                    AddRecipeTask addRecipeTask = new AddRecipeTask(
+                            new Receta(editTextNombre.getText().toString(), editTextTipo.getText().toString(),
+                                    adaptadorStringsIngredientes.getStrings(), adaptadorStringsInstrucciones.getStrings(), image_paths));
+                    addRecipeTask.execute();
+                    finish();
+                }
             }
         });
 
@@ -199,6 +232,74 @@ public class AgregarReceta extends AppCompatActivity {
                     image_paths.add(path);
                 }
                 break;
+            }
+        }
+    }
+
+    private class AddRecipeTask extends AsyncTask<Void, Void, Boolean> {
+
+        private final Receta receta;
+        private final int ADD_RECIPE_CODE = 102;
+
+        public AddRecipeTask(Receta receta) {
+            this.receta = receta;
+        }
+
+        // Do the long-running work in here
+        protected Boolean doInBackground(Void... urls) {
+            SharedPreferences prefs = getSharedPreferences(PREFERENCES_FILE_NAME, MODE_PRIVATE);
+            String token = prefs.getString("token", null);
+            if(token != null) {
+                try {
+                    //Ahora creo un Map de parámetros para enviarlos
+                    Map<String, String> parameters = new HashMap<>();
+                    parameters.put("token", token);
+                    parameters.put("nombre", receta.getNombre());
+                    parameters.put("tipo", receta.getTipo());
+
+                    //Primero especifico el URL al cuál le haré el post de registro
+                    URL url = new URL("http://iiproyecto.herokuapp.com/recipe/info?".concat(ParameterStringBuilder.getParamsString(parameters)));
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+                    //Tipo POST, con 5 segundos de timeout de conexión y de leída de datos
+                    con.setRequestMethod("POST");
+                    con.setConnectTimeout(5000);
+                    con.setReadTimeout(5000);
+
+                    if (con.getResponseCode() == 201) {
+                        parameters = new HashMap<>();
+                        parameters.put("token", token);
+                        parameters.put("nombre", receta.getNombre());
+                        parameters.put("pasos", receta.instructionsToString());//[Ins 1, Ins 2]
+                        parameters.put("ingredientes", receta.ingredientesToString());
+                        parameters.put("imagen", receta.imagenesToString());
+
+                        //Primero especifico el URL al cuál le haré el post de registro
+                        url = new URL("http://iiproyecto.herokuapp.com/recipe/info?".concat(ParameterStringBuilder.getParamsString(parameters)));
+                        con = (HttpURLConnection) url.openConnection();
+
+                        //Tipo POST, con 5 segundos de timeout de conexión y de leída de datos
+                        con.setRequestMethod("PUT");
+                        con.setConnectTimeout(5000);
+                        con.setReadTimeout(5000);
+                        if (con.getResponseCode() == 200) {
+                            return true;
+                        }
+                    }
+                    return false;
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        // This is called when doInBackground() is finished
+        protected void onPostExecute(final Boolean success) {
+            if (success) {
+                finish();
             }
         }
     }

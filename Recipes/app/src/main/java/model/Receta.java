@@ -2,6 +2,7 @@ package model;
 
 import android.net.Uri;
 
+import java.net.URI;
 import java.util.ArrayList;
 
 public class Receta {
@@ -38,5 +39,29 @@ public class Receta {
 
     public ArrayList<Uri> getImagenes() {
         return imagenes;
+    }
+
+    public String ingredientesToString(){
+        StringBuilder result = new StringBuilder();
+        for(String ingrediente:this.ingredientes){
+            result.append(ingrediente).append(", ");
+        }
+        return result.toString().replace(", ", "");
+    }
+
+    public String instructionsToString(){
+        StringBuilder result = new StringBuilder("[");
+        for(String instruction:this.instrucciones){
+            result.append(instruction).append(", ");
+        }
+        return result.toString().replace(", ", "").concat("]");
+    }
+
+    public String imagenesToString(){
+        StringBuilder result = new StringBuilder();
+        for(Uri imagen:this.imagenes){
+            result.append(imagen.toString()).append(", ");
+        }
+        return result.toString().replace(", ", "");
     }
 }

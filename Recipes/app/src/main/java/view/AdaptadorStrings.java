@@ -38,6 +38,10 @@ public class AdaptadorStrings extends RecyclerView.Adapter <AdaptadorStrings.Vie
         notifyDataSetChanged();
     }
 
+    public ArrayList<String> getStrings() {
+        return strings;
+    }
+
     @NonNull
     @Override
     public ViewHolderString onCreateViewHolder(@NonNull ViewGroup parent, int i) {
