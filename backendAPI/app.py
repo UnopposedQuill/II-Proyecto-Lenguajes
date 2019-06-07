@@ -1,8 +1,6 @@
 """TODO:
-  Impleentar el get de recetas y receta independiente
   **Coneccion a sqlite/postgre -> login
   Aprender a escriir de manera decente
-  Conectar al prolog usando lode Paul
 """
 import json
 import sys
@@ -17,7 +15,9 @@ parserReceta = reqparse.RequestParser(); #parser del input
 parserReceta.add_argument('nombre');
 parserReceta.add_argument('tipo');
 parserReceta.add_argument('ingrediente');
+parserReceta.add_argument('ingredientes',action='append');
 parserReceta.add_argument('pasos',action='append');
+parserReceta.add_argument('imagen',action='append');
 parserReceta.add_argument('token',required=True);
 
 #parser para la informacion del login
@@ -40,16 +40,19 @@ class Recipe(Resource):
     args = parserReceta.parse_args();
     if(args['nombre']==None): return{'Error':'nombre es campo requerido'};
     nombre = '"'+args['nombre']+'"';
-    data = {}; envio = {'nombre':nombre,'ingrediente':[],'paso':[]};
+    data = {}; envio = {'nombre':args['nombre']};
     PrologCallWRP('infoReceta('+nombre+',I,T,P,L).',['I','T','P','L']);
+    existe=False;
     with open('data.json') as infile: data = json.load(infile);
     for receta in data:
+      existe=True;
       print(receta);
-      envio['ingrediente']=(receta['I']);
-      envio['pasos']=(receta['P']);
+      envio['ingrediente']=receta['I'];
+      envio['pasos']=receta['P'];
       envio['tipo']=receta['T'];
       envio['imagenes']=receta['L'];
-    return envio
+    if(existe): return envio;
+    else: return {'Error':'Receta invalida'},404;
 
   def put(self):
     #curl localhost:5000/recipe/info -dnombre="nmbre" -dingrediente="ingreNuevo" -XPUT
@@ -59,8 +62,9 @@ class Recipe(Resource):
     args = parserReceta.parse_args();
     if(args['nombre']==None): return {'message':'nombre es campo requrido'};
     nombre = args['nombre'];
-    ingre = args['ingrediente'];
+    ingre = args['ingredientes'];
     pasos = args['pasos'];
+    img = args['imagen'];
     
     """Check si la receta existe"""
     existe = False;
@@ -73,11 +77,17 @@ class Recipe(Resource):
     if not existe:
       return {'Error':'Receta no existente'};
     if(ingre!=None):
-      PrologCallWRP('escribirClausula(ingrediente("'+ingre+'")).',[]);
-      PrologCallWRP('escribirClausula(ingredienteReceta("'+ingre+'","'+nombre+'")).',[]);
+      for ing in ingre:
+        print(ing);
+        PrologCallWRP('escribirClausula(ingrediente("'+ing+'")).',[]);
+        PrologCallWRP('escribirClausula(ingredienteReceta("'+ing+'","'+nombre+'")).',[]);
     if(pasos!=None):
       lista = '["'+'","'.join(pasos)+'"]'
       PrologCallWRP('escribirClausula(listaPasos('+lista+',"'+nombre+'")).',[])
+    if(img):
+      for im in img: 
+        print(im);
+        PrologCallWRP('escribirClausula(listaImagenes("'+im+'","'+nombre+'")).',[]);
     return {'Message':'Receta modificada existosamente'};
 
   def post(self):
@@ -95,7 +105,7 @@ class Recipe(Resource):
         if receta:
           existe = True;
     if existe:
-      return {'Error':'Receta ya existente'};
+      return {'Error':'Receta ya existente'},833;
     tipo = args['tipo']
     PrologCallWRP('escribirClausula(receta("'+nombre+'","'+tipo+'")).',[])
     return {nombre:tipo}
@@ -109,9 +119,8 @@ class Recipes(Resource):
     PrologCallWRP('receta(X,Y)',['X','Y'])
     data = {}; envio = [];
     with open('data.json') as infile: data = json.load(infile)
-    for receta in data: envio.append({'nombre' : receta['X'],'tipo': receta['Y']});
-    return {'receta':envio};
-
+    for receta in data: envio.append(receta['X']);
+    return {'recetas':envio};
 """----------------------------------------------------------------------------"""
 
 
@@ -137,24 +146,15 @@ class Filter(Resource):
       request=request+'T).';
       query+=['T'];
     PrologCallWRP(request,query);
-    data = {}; envio={};
+    data = {}; envio=[];
     with open('data.json') as infile: data=json.load(infile);
     for receta in data:
       print(receta);
-      nombre = args['nombre'];
-      if(not nombre): nombre = receta['R'];
-      loc = {};
-      if(not args['nombre']): loc['nombre']=receta['R'];
-      else: loc['nombre']=args['nombre']
-      if(not args['tipo']): loc['tipo']=receta['T'];
-      else: loc['tipo']=args['tipo'];
-      if(not args['ingrediente']): loc['ingrediente']=receta['I'];
-      else: loc['ingrediente']=args['ingrediente'];
-      print(loc);
-      """sobre escribe toda entrada anterior de la misma receta
-        otra opcion es un append, pero crea para una receta R tantas entradas como ingredientes tenga"""
-      envio[nombre]=loc;
-    return envio;
+      nombre = ""
+      if(not args['nombre']): nombre = receta['R'];
+      else: nombre = args['nombre'];
+      envio.append(nombre) if nombre not in envio else envio;
+    return {'result':envio};
 """----------------------------------------------------------------------------"""
 
 """----------------------------------------------------------------------------"""

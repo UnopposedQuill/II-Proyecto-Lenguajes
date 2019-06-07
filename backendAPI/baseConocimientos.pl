@@ -13,5 +13,10 @@ listaPasos(["Open chicken","Crare blin","Eat"],"Blin").
 ingrediente("FLOUR").
 ingredienteReceta("FLOUR","Blin").
 ingrediente("milk").
-listaImagenes(["/home/esteban/Descargas/Lenguajes de Programación/Proyectos/II-Proyecto-Lenguajes/backendAPI/bread.png"], "Huevo Frito").
+listaImagenes("/home/esteban/Descargas/Lenguajes de Programación/Proyectos/II-Proyecto-Lenguajes/backendAPI/bread.png", "Huevo Frito").
 ingredienteReceta("milk","Blin").
+ingrediente("lorem").
+ingredienteReceta("lorem","Blin").
+ingrediente("ipsum").
+ingredienteReceta("ipsum","Blin").
+listaPasos(["algo1","algo2"],"Blin").

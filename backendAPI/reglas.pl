@@ -22,10 +22,15 @@ recetas(Receta, Ingrediente, TipoReceta):-
 	ingredienteReceta(Ingrediente, Receta).
 
 /*Esta regla retorna toda la informacion detallada de una receta*/
+append3([], List, List).
+append3([Head|Tail], List, [Head|Rest]) :-
+    append3(Tail, List, Rest).
+flatten2([],[]).
+flatten2([H|T],P):-!,flatten2(T,N),append3(H,N,P).
 pasos([],[]).
-pasos(P,[P|_]).
+pasos(P,L):-flatten2(L,P).
 infoReceta(R,I,T,P,L):-
   receta(R,T),
   findall(X,ingredienteReceta(X,R),I),
   findall(Y,listaPasos(Y,R),N),pasos(P,N),
-  findall(Z,listaImagenes(Z,R),M),pasos(L,M).
+  findall(Z,listaImagenes(Z,R),L).
