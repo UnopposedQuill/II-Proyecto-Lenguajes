@@ -35,7 +35,6 @@ public class AdaptadorStrings extends RecyclerView.Adapter <AdaptadorStrings.Vie
 
     public void addData(String s){
         this.strings.add(s);
-        notifyDataSetChanged();
     }
 
     public ArrayList<String> getStrings() {

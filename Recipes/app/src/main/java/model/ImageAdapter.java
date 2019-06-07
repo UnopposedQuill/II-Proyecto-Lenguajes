@@ -52,7 +52,6 @@ public class ImageAdapter extends PagerAdapter {
 
     public void addView(ImageView imageView) {
         image_views.add(imageView);
-        notifyDataSetChanged();
     }
 
     /* Por el momento no se implementa el borrado en ningún sitio
