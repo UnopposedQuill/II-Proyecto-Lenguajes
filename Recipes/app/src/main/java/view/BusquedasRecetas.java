@@ -55,6 +55,7 @@ public class BusquedasRecetas extends AppCompatActivity {
 
                 //Ahora rellenar con la información nueva
                 //@TODO: Hacer que estos datos provengan de la API
+
                 String [] datos = {"Huevo Frito", "Huevo Duro"};
 
                 //Ahora muevo todos los valores al adaptador
