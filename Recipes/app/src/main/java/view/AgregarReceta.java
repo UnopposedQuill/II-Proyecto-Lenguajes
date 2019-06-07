@@ -296,63 +296,7 @@ public class AgregarReceta extends AppCompatActivity {
                     con.setReadTimeout(5000);
 
                     if (con.getResponseCode() == 201) {
-                        //@TODO: Agregar imágenes usando API de imgbb
 
-                        ArrayList<String> urlsSubidos = new ArrayList<>();
-                        for(int i = 0;i < image_paths.size();i++) {
-                            parameters = new HashMap<>();
-                            parameters.put("key", "fb1b7b043354a29f0237f5c37d1768fb");
-                            parameters.put("name", receta.getNombre().concat("_").concat(String.valueOf(i)));
-                            /*
-                            String fileRoute = image_paths.get(i).toString();
-                            Bitmap bitmap = BitmapFactory.decodeFile(fileRoute);
-                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                            */
-                            Uri imageUri = image_paths.get(i);
-                            InputStream inputStream = getContentResolver().openInputStream(imageUri);
-                            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-
-                            byte [] b = baos.toByteArray();
-                            String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-
-                            parameters.put("image", encodedImage);
-
-                            url = new URL("http://api.imgbb.com/1/upload?".concat(ParameterStringBuilder.getParamsString(parameters)));
-                            con = (HttpURLConnection) url.openConnection();
-
-                            con.setRequestMethod("POST");
-                            con.setConnectTimeout(5000);
-                            con.setReadTimeout(5000);
-                            int status = con.getResponseCode();
-                            if (status == 200) {
-
-                                BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                                String inputLine;
-                                StringBuilder content = new StringBuilder();
-                                while ((inputLine = in.readLine()) != null) {
-                                    content.append(inputLine);
-                                }
-                                in.close();
-
-                                String s = content.toString();
-                                //System.out.println(s);
-
-                                try {
-                                    JSONObject jsonObject = new JSONObject(s);
-                                    JSONObject data = jsonObject.getJSONObject("data");
-                                    JSONObject urlValue = data.getJSONObject("url");
-                                    urlsSubidos.add(urlValue.toString());
-                                }catch (JSONException e){
-                                    return false;
-                                }
-                            }
-                            else{
-                                return false;
-                            }
-                        }
                         parameters = new HashMap<>();
                         parameters.put("token", token);
                         parameters.put("nombre", receta.getNombre());
