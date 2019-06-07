@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -22,20 +23,25 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.Permission;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,6 +49,8 @@ import java.util.Map;
 import model.ImageAdapter;
 import model.ParameterStringBuilder;
 import model.Receta;
+
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
 public class AgregarReceta extends AppCompatActivity {
 
@@ -56,6 +64,7 @@ public class AgregarReceta extends AppCompatActivity {
     //Código para petición de uso de cámara, código para tomar una foto con cámara y código para
     //tomar una foto de galería respectivamente
     private final int CAMERA_PERMISSION = 100;
+    private final int READ_EXTERNAL_PERMISSION_CODE = 101;
     private final int PHOTO_CODE = 100;
     private final int SELECT_PICTURE = 200;
 
@@ -203,6 +212,25 @@ public class AgregarReceta extends AppCompatActivity {
             }
         });
 
+        mayRequestReading();
+
+    }
+
+    private boolean mayRequestReading() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+        if (checkSelfPermission(READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        if (shouldShowRequestPermissionRationale(READ_EXTERNAL_STORAGE)) {
+            // TODO: alert the user with a Snackbar/AlertDialog giving them the permission rationale
+            // To use the Snackbar from the design support library, ensure that the activity extends
+            // AppCompatActivity and uses the Theme.AppCompat theme.
+        } else {
+            requestPermissions(new String[]{READ_EXTERNAL_STORAGE}, READ_EXTERNAL_PERMISSION_CODE);
+        }
+        return false;
     }
 
     /**
@@ -230,6 +258,7 @@ public class AgregarReceta extends AppCompatActivity {
                     imageView.setImageURI(path);
                     image_adapter.addView(imageView);
                     image_paths.add(path);
+                    image_adapter.notifyDataSetChanged();
                 }
                 break;
             }
@@ -267,6 +296,63 @@ public class AgregarReceta extends AppCompatActivity {
                     con.setReadTimeout(5000);
 
                     if (con.getResponseCode() == 201) {
+                        //@TODO: Agregar imágenes usando API de imgbb
+
+                        ArrayList<String> urlsSubidos = new ArrayList<>();
+                        for(int i = 0;i < image_paths.size();i++) {
+                            parameters = new HashMap<>();
+                            parameters.put("key", "fb1b7b043354a29f0237f5c37d1768fb");
+                            parameters.put("name", receta.getNombre().concat("_").concat(String.valueOf(i)));
+                            /*
+                            String fileRoute = image_paths.get(i).toString();
+                            Bitmap bitmap = BitmapFactory.decodeFile(fileRoute);
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            */
+                            Uri imageUri = image_paths.get(i);
+                            InputStream inputStream = getContentResolver().openInputStream(imageUri);
+                            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+
+                            byte [] b = baos.toByteArray();
+                            String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+
+                            parameters.put("image", encodedImage);
+
+                            url = new URL("http://api.imgbb.com/1/upload?".concat(ParameterStringBuilder.getParamsString(parameters)));
+                            con = (HttpURLConnection) url.openConnection();
+
+                            con.setRequestMethod("POST");
+                            con.setConnectTimeout(5000);
+                            con.setReadTimeout(5000);
+                            int status = con.getResponseCode();
+                            if (status == 200) {
+
+                                BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                                String inputLine;
+                                StringBuilder content = new StringBuilder();
+                                while ((inputLine = in.readLine()) != null) {
+                                    content.append(inputLine);
+                                }
+                                in.close();
+
+                                String s = content.toString();
+                                //System.out.println(s);
+
+                                try {
+                                    JSONObject jsonObject = new JSONObject(s);
+                                    JSONObject data = jsonObject.getJSONObject("data");
+                                    JSONObject urlValue = data.getJSONObject("url");
+                                    urlsSubidos.add(urlValue.toString());
+                                }catch (JSONException e){
+                                    return false;
+                                }
+                            }
+                            else{
+                                return false;
+                            }
+                        }
                         parameters = new HashMap<>();
                         parameters.put("token", token);
                         parameters.put("nombre", receta.getNombre());
@@ -285,6 +371,8 @@ public class AgregarReceta extends AppCompatActivity {
                         if (con.getResponseCode() == 200) {
                             return true;
                         }
+
+                        return false;
                     }
                     return false;
 

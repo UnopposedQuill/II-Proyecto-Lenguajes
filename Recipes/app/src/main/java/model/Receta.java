@@ -58,6 +58,14 @@ public class Receta {
     }
 
     public String imagenesToString(){
+        StringBuilder result = new StringBuilder("[");
+        for(Uri imagen:this.imagenes){
+            result.append(imagen.toString()).append(", ");
+        }
+        return result.toString().replace(", ", "");
+    }
+
+    public static String imagenesSubidasToString(ArrayList<String> arraysSubidos){
         StringBuilder result = new StringBuilder();
         for(Uri imagen:this.imagenes){
             result.append(imagen.toString()).append(", ");
