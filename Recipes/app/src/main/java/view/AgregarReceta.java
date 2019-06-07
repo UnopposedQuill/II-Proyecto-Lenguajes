@@ -191,7 +191,7 @@ public class AgregarReceta extends AppCompatActivity {
                 EditText editTextIngrediente = findViewById(R.id.editTextIngrediente);
                 String texto = editTextIngrediente.getText().toString();
                 if(!texto.equals("")) {
-                    adaptadorStringsIngredientes.addData(editTextIngrediente.getText().toString());
+                    adaptadorStringsIngredientes.addData(editTextIngrediente.getText().toString().trim());
                     editTextIngrediente.setText("");
                 }
             }
@@ -206,7 +206,7 @@ public class AgregarReceta extends AppCompatActivity {
                 EditText editTextInstruccion = findViewById(R.id.editTextInstrucciones);
                 String texto = editTextInstruccion.getText().toString();
                 if(!texto.equals("")) {
-                    adaptadorStringsInstrucciones.addData(editTextInstruccion.getText().toString());
+                    adaptadorStringsInstrucciones.addData(editTextInstruccion.getText().toString().trim());
                     editTextInstruccion.setText("");
                 }
             }
