@@ -1,5 +1,8 @@
 package view;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +14,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -22,6 +24,8 @@ import java.util.Map;
 import model.ParameterStringBuilder;
 
 public class RegisterActivity extends AppCompatActivity {
+
+    public static String PREFERENCES_FILE_NAME = "preferences.txt";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +42,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 //Creo una nueva tarea de registro
-                RegisterTask registerTask = new RegisterTask(registerEmail.getText().toString(), registerPass.getText().toString());
+                RegisterTask registerTask = new RegisterTask(registerEmail.getText().toString(), registerPass.getText().toString(), v.getContext());
 
                 //Ahora la ejecuto
                 registerTask.execute();
@@ -50,10 +54,13 @@ public class RegisterActivity extends AppCompatActivity {
 
         private final String mEmail;
         private final String mPassword;
+        private final Context mContext;
+        private final int REGISTER_CODE = 101;
 
-        private RegisterTask(String email, String password){
+        private RegisterTask(String email, String password, Context context){
             mEmail = email;
             mPassword = password;
+            this.mContext = context;
         }
 
         // Do the long-running work in here
@@ -87,12 +94,13 @@ public class RegisterActivity extends AppCompatActivity {
 
                     JSONObject jsonObject = new JSONObject(s);
 
-                    //@TODO: Hacer algo con el token
                     String token = jsonObject.getString("token");
-                    System.out.println(token);
 
+                    //Ahora guardar el token en sharedpreferences
+                    SharedPreferences.Editor editor = getSharedPreferences(PREFERENCES_FILE_NAME, MODE_PRIVATE).edit();
+                    editor.putString("token", token);
+                    editor.apply();
                     return true;
-                //status == "CREATED"
                 }
                 return false;
 
@@ -108,9 +116,9 @@ public class RegisterActivity extends AppCompatActivity {
         // This is called when doInBackground() is finished
         protected void onPostExecute(final Boolean success) {
             if(success){
-                finish();
+                Intent intent = new Intent(this.mContext, UserHome.class);
+                startActivityForResult(intent, REGISTER_CODE);
             }
         }
     }
-
 }

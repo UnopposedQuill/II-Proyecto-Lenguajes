@@ -74,7 +74,6 @@ public class AdaptadorNombresRecetas extends android.support.v7.widget.RecyclerV
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //@TODO: Agregar el llamado a detalle de Receta
                     //Creo el intento de llamado de Actividad
                     Intent intent = new Intent(v.getContext(), DetallesReceta.class);
 

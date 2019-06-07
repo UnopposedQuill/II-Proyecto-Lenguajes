@@ -1,6 +1,7 @@
 package view;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.Button;
 public class UserHome extends AppCompatActivity {
 
     private final int CODIGO_USER_HOME = 101;
+    public static String PREFERENCES_FILE_NAME = "preferences.txt";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +43,9 @@ public class UserHome extends AppCompatActivity {
         botonCerrarSesion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //@TODO: Hacer que de verdad cierre sesión
+                SharedPreferences.Editor editor = getSharedPreferences(PREFERENCES_FILE_NAME, MODE_PRIVATE).edit();
+                editor.clear();
+                editor.apply();
                 finish();
             }
         });
@@ -49,7 +53,6 @@ public class UserHome extends AppCompatActivity {
         botonBuscarReceta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //@TODO: Hacer que redirija a una versión especializada de la que muestra todas las recetas
                 Intent intent = new Intent(v.getContext(), BusquedasRecetas.class);
                 startActivityForResult(intent, CODIGO_USER_HOME);
             }

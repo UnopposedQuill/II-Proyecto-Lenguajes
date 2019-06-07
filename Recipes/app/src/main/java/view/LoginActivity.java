@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 
@@ -30,9 +31,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import model.ParameterStringBuilder;
 import model.Usuario;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -60,6 +72,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             new Usuario("usuario@gmail.com", "world", "Usuario1"),
             new Usuario("abc@gmail.com", "creza", "Usuario2")
     };
+    public static String PREFERENCES_FILE_NAME = "preferences.txt";
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -313,17 +326,53 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
 
-            //Reviso todos los usuarios que conseguí de la base de datos, y los comparo respecto a las
-            //credenciales conseguidas
-            for(Usuario usuario: DUMMY_USERS){
-                if(usuario.getEmail().equals(this.mEmail) && usuario.getContrasenha().equals(this.mPassword)){
-                    return true;//las credenciales coincidieron con alguno
+            try {
+                //Ahora creo un Map de parámetros para enviarlos
+                Map<String, String> parameters = new HashMap<>();
+                parameters.put("user", mEmail);
+                parameters.put("pass", mPassword);
+
+                //Primero especifico el URL al cuál le haré el post de registro
+                URL url = new URL("http://iiproyecto.herokuapp.com/login?".concat(ParameterStringBuilder.getParamsString(parameters)));
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+                //Tipo POST, con 5 segundos de timeout de conexión y de leída de datos
+                con.setRequestMethod("GET");
+                con.setConnectTimeout(5000);
+                con.setReadTimeout(5000);
+
+                if (con.getResponseCode() == 200) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    String inputLine;
+                    StringBuilder content = new StringBuilder();
+                    while ((inputLine = in.readLine()) != null) {
+                        content.append(inputLine);
+                    }
+                    in.close();
+
+                    String s = content.toString();
+                    //System.out.println(s);
+
+                    JSONObject jsonObject = new JSONObject(s);
+
+                    String token = jsonObject.getString("token");
+
+                    //Ahora guardar el token en sharedpreferences
+                    SharedPreferences.Editor editor = getSharedPreferences(PREFERENCES_FILE_NAME, MODE_PRIVATE).edit();
+                    editor.putString("token", token);
+                    editor.apply();
+                    return true;
                 }
+                return false;
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return false;
             }
-            //ninguno coincidió: error
-            return false;
         }
 
         @Override
@@ -334,7 +383,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             if (success) {
                 Intent intento = new Intent(mLoginFormView.getContext(), UserHome.class);
                 //necesito pasar los parámetros del usuario, el más importante: el correo de la cuenta
-                intento.putExtra("correo", mEmail);
                 startActivityForResult(intento, 0);
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
