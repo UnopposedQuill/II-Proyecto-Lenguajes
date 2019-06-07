@@ -37,7 +37,6 @@ public class AdaptadorNombresRecetas extends android.support.v7.widget.RecyclerV
 
     void addData(String s){
         this.nombresRecetas.add(s);
-        notifyDataSetChanged();
     }
 
     @NonNull

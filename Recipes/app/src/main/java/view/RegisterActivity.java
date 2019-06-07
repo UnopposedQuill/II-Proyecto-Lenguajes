@@ -32,7 +32,6 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-
         Button registerButtonActivity = findViewById(R.id.button_crear_receta);
         final EditText registerEmail = findViewById(R.id.email_register_activity);
         final EditText registerPass = findViewById(R.id.password_register_activity);

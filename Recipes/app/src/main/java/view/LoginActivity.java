@@ -59,19 +59,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
      */
     private static final int REQUEST_READ_CONTACTS = 0;
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            //"foo@example.com:hello", "bar@example.com:world"
-            "cliente@gmail.com:world", "abc@gmail.com:creza"
-    };
-
-    private static final Usuario[] DUMMY_USERS = {
-            new Usuario("usuario@gmail.com", "world", "Usuario1"),
-            new Usuario("abc@gmail.com", "creza", "Usuario2")
-    };
     public static String PREFERENCES_FILE_NAME = "preferences.txt";
 
     /**
