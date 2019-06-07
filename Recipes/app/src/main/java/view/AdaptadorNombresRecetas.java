@@ -17,7 +17,7 @@ public class AdaptadorNombresRecetas extends android.support.v7.widget.RecyclerV
     private ArrayList<String> nombresRecetas;
     private Activity activity;
 
-    public AdaptadorNombresRecetas(ArrayList<String> nombresRecetas, Activity activity) {
+    AdaptadorNombresRecetas(ArrayList<String> nombresRecetas, Activity activity) {
         this.nombresRecetas = nombresRecetas;
         this.activity = activity;
     }
@@ -25,7 +25,7 @@ public class AdaptadorNombresRecetas extends android.support.v7.widget.RecyclerV
     /**
      * Para vaciar la lista de datos
      */
-    public void emptyData(){
+    void emptyData(){
         //Mientras haya datos
         while(!this.nombresRecetas.isEmpty()){
             //Remueva
@@ -35,18 +35,16 @@ public class AdaptadorNombresRecetas extends android.support.v7.widget.RecyclerV
         this.notifyDataSetChanged();
     }
 
-    public boolean addData(String s){
-        boolean b = this.nombresRecetas.add(s);
+    void addData(String s){
+        this.nombresRecetas.add(s);
         notifyDataSetChanged();
-        return b;
     }
 
     @NonNull
     @Override
     public ViewHolderReceta onCreateViewHolder(@NonNull ViewGroup parent, int i) {
         View vistaReceta = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_layout, parent,false);
-        ViewHolderReceta viewHolderReceta = new ViewHolderReceta(vistaReceta, this.activity);
-        return viewHolderReceta;
+        return new ViewHolderReceta(vistaReceta, this.activity);
     }
 
     @Override
@@ -60,12 +58,12 @@ public class AdaptadorNombresRecetas extends android.support.v7.widget.RecyclerV
     }
 
     //Necesito implementar esta clase, pues es la que define cómo es que se visualizan las recetas
-    public static class ViewHolderReceta extends RecyclerView.ViewHolder {
+    static class ViewHolderReceta extends RecyclerView.ViewHolder {
 
-        public TextView textViewNombre;
-        protected final int CODIGO_RECYCLER_ADAPTER = 100;
+        TextView textViewNombre;
+        final int CODIGO_RECYCLER_ADAPTER = 100;
 
-        public ViewHolderReceta(View v, final Activity activity){
+        ViewHolderReceta(View v, final Activity activity){
             //Creo un ViewHolder Básico
             super(v);
 

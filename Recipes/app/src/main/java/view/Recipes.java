@@ -29,15 +29,15 @@ public class Recipes extends AppCompatActivity {
             }
         });
 
-        //Ahora la parte complicada, la configuración inicial del RecyclerView
-        RecyclerView recyclerView = findViewById(R.id.recipes_recyclerView);
+        //Ahora la parte complicada, primero la configuración inicial del RecyclerView de Imágenes
+        RecyclerView recyclerViewImagenes = findViewById(R.id.recipes_recyclerView);
 
         //No me interesa que cambie de tamaño
-        recyclerView.setHasFixedSize(true);
+        recyclerViewImagenes.setHasFixedSize(true);
 
         //Necesito un administrador de Layout de tipo parrilla con dos columnas
         GridLayoutManager linearLayout = new GridLayoutManager(this, SPAN_COUNT);
-        recyclerView.setLayoutManager(linearLayout);
+        recyclerViewImagenes.setLayoutManager(linearLayout);
 
         //Ahora crearé unos datos de Prueba
         //@TODO: Cambiarlos por una búsqueda usando la API
@@ -48,6 +48,6 @@ public class Recipes extends AppCompatActivity {
 
         //Ahora creo un nuevo adaptador de datos que se encargará de pasarle los datos al RecyclerView
         AdaptadorNombresRecetas adaptadorRecetas = new AdaptadorNombresRecetas(nombresRecetas, this);
-        recyclerView.setAdapter(adaptadorRecetas);
+        recyclerViewImagenes.setAdapter(adaptadorRecetas);
     }
 }

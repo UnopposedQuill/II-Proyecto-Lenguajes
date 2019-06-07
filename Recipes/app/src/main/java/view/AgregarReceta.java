@@ -18,8 +18,11 @@ import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import java.io.File;
@@ -45,7 +48,7 @@ public class AgregarReceta extends AppCompatActivity {
     private ArrayList<Uri> image_paths;
 
     //El mostrador de imágenes de la interfaz así como su adaptador de las imágenes a ImageViews
-    private ViewPager image_shower;
+    //private ViewPager image_shower;
     private ImageAdapter image_adapter;
 
     @Override
@@ -53,18 +56,41 @@ public class AgregarReceta extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_agregar_receta);
 
+        //Primero defino los RecyclerView para poder actualizarlos
         //Primero la lista de imágenes
         image_paths = new ArrayList<>();
 
         //primero creo el mostrador de imágenes
-        image_shower = findViewById(R.id.image_slider);
+        ViewPager image_shower = findViewById(R.id.image_slider);
 
         //Ahora el adaptador, encargadado de tomar las imágenes y convertirlas en algo que
         //El mostrador pueda mostrar
         image_adapter = new ImageAdapter();
         image_shower.setAdapter(image_adapter);
 
-        //Primero busco el botón de agregado de imágenes
+        //Ahora el de Ingredientes, necesito conservar el adaptador para poder agregarle datos
+        RecyclerView recyclerViewIngredientes = findViewById(R.id.recyclerViewIngredientes);
+
+        recyclerViewIngredientes.setHasFixedSize(true);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerViewIngredientes.setLayoutManager(linearLayoutManager);
+
+        final AdaptadorStrings adaptadorStringsIngredientes = new AdaptadorStrings(new ArrayList<String>());
+        recyclerViewIngredientes.setAdapter(adaptadorStringsIngredientes);
+
+        //Finalmente el de Instrucciones
+        RecyclerView recyclerViewInstrucciones = findViewById(R.id.recyclerViewInstrucciones);
+
+        recyclerViewInstrucciones.setHasFixedSize(true);
+
+        linearLayoutManager = new LinearLayoutManager(this);
+        recyclerViewInstrucciones.setLayoutManager(linearLayoutManager);
+
+        final AdaptadorStrings adaptadorStringsInstrucciones = new AdaptadorStrings(new ArrayList<String>());
+        recyclerViewInstrucciones.setAdapter(adaptadorStringsInstrucciones);
+
+        //Ahora busco el botón de agregado de imágenes
         final Button mAddImage = findViewById(R.id.boton_agregar_imagen);
 
         //Le agrego un listener tal que muestre un nuevo diálogo por defecto con 3 opciones desde
@@ -103,7 +129,7 @@ public class AgregarReceta extends AppCompatActivity {
             }
         });
 
-        //finalmente la funcionalidad de agregar la receta como tal
+        //Ahora la funcionalidad de agregar la receta como tal
         final Button botonCrearReceta = findViewById(R.id.button_confirm_creation);
 
         botonCrearReceta.setOnClickListener(new View.OnClickListener() {
@@ -111,6 +137,30 @@ public class AgregarReceta extends AppCompatActivity {
             public void onClick(View v) {
                 //@TODO: Hacer que de verdad guarde la receta, primero las validaciones
                 finish();
+            }
+        });
+
+        //Ahora el botón para agregar un nuevo ingrediente
+        final Button botonAgregarIngrediente = findViewById(R.id.button_add_ingredient);
+
+        botonAgregarIngrediente.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText editTextIngrediente = findViewById(R.id.editTextIngrediente);
+                adaptadorStringsIngredientes.addData(editTextIngrediente.getText().toString());
+                editTextIngrediente.setText("");
+            }
+        });
+
+        //Ahora el botón para agregar una nueva instrucción
+        final Button botonAgregarInstruccion = findViewById(R.id.button_add_instruction);
+
+        botonAgregarInstruccion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText editTextInstruccion = findViewById(R.id.editTextInstrucciones);
+                adaptadorStringsInstrucciones.addData(editTextInstruccion.getText().toString());
+                editTextInstruccion.setText("");
             }
         });
 
