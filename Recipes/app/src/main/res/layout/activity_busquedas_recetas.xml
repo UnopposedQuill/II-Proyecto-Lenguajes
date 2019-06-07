@@ -24,11 +24,11 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="87dp">
+        android:layout_height="128dp">
 
         <Button
             android:id="@+id/button_dismiss_search"
-            android:layout_width="124dp"
+            android:layout_width="wrap_content"
             android:layout_height="41dp"
             android:layout_marginStart="4dp"
             android:layout_marginLeft="4dp"
@@ -48,59 +48,76 @@
 
         <EditText
             android:id="@+id/editTextValorBusqueda"
-            android:layout_width="220dp"
-            android:layout_height="41dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginLeft="4dp"
+            android:layout_width="179dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
             android:layout_marginBottom="8dp"
             android:ems="10"
             android:hint="@string/entry_tooltip"
             android:inputType="textPersonName"
             app:layout_constraintBottom_toTopOf="@+id/button_start_search"
+            app:layout_constraintEnd_toStartOf="@+id/radioGroup"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <RadioButton
-            android:id="@+id/radioButtonNombre"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/radio_nombre"
-            app:layout_constraintStart_toEndOf="@+id/editTextValorBusqueda"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <RadioButton
-            android:id="@+id/radioButtonTipo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="@string/radio_tipo"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/button_dismiss_search"
-            app:layout_constraintTop_toBottomOf="@+id/radioButtonNombre" />
-
-        <RadioButton
-            android:id="@+id/radioButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="183dp"
+            android:layout_height="122dp"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginBottom="8dp"
-            android:text="@string/radio_ingrediente"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/radioButtonTipo"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintStart_toEndOf="@+id/button_dismiss_search"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <RadioButton
+                android:id="@+id/radioButtonNombre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:checked="true"
+                android:clickable="true"
+                android:text="@string/radio_nombre" />
+
+            <RadioButton
+                android:id="@+id/radioButtonTipo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:clickable="true"
+                android:text="@string/radio_tipo" />
+
+            <RadioButton
+                android:id="@+id/radioButtonIngrediente"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:checked="false"
+                android:clickable="true"
+                android:text="@string/radio_ingrediente" />
+        </RadioGroup>
 
     </android.support.constraint.ConstraintLayout>
 

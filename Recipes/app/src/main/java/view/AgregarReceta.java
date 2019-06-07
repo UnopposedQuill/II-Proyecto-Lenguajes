@@ -147,8 +147,11 @@ public class AgregarReceta extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 EditText editTextIngrediente = findViewById(R.id.editTextIngrediente);
-                adaptadorStringsIngredientes.addData(editTextIngrediente.getText().toString());
-                editTextIngrediente.setText("");
+                String texto = editTextIngrediente.getText().toString();
+                if(!texto.equals("")) {
+                    adaptadorStringsIngredientes.addData(editTextIngrediente.getText().toString());
+                    editTextIngrediente.setText("");
+                }
             }
         });
 
@@ -159,8 +162,11 @@ public class AgregarReceta extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 EditText editTextInstruccion = findViewById(R.id.editTextInstrucciones);
-                adaptadorStringsInstrucciones.addData(editTextInstruccion.getText().toString());
-                editTextInstruccion.setText("");
+                String texto = editTextInstruccion.getText().toString();
+                if(!texto.equals("")) {
+                    adaptadorStringsInstrucciones.addData(editTextInstruccion.getText().toString());
+                    editTextInstruccion.setText("");
+                }
             }
         });
 
