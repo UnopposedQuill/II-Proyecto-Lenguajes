@@ -2,6 +2,10 @@
   **Coneccion a sqlite/postgre -> login
   Aprender a escriir de manera decente
 """
+import random
+import string
+import os
+import psycopg2
 import json
 import sys
 import subprocess
@@ -27,6 +31,13 @@ parserLogin.add_argument('pass',required=True);
 
 app = Flask(__name__)
 api = Api(app)
+
+def hash(sttt):
+  s=0;
+  for lt in sttt:
+    s+=ord(lt)-ord('a');
+    s*=27;
+  return s%11;
 
 """----------------------------------------------------------------------------"""
 class Recipe(Resource):
@@ -128,6 +139,7 @@ class Recipes(Resource):
 class Filter(Resource):
   def get(self):
     args = parserReceta.parse_args();
+    if(hash(token)>0): return {'error':'token invalido'};
     request='recetas(';
     query=[];
     if(args['nombre']):
@@ -163,11 +175,37 @@ class Login(Resource):
   def get(self):
     """retorna el token para un username|password existente, o eror en otro caso"""
     args = parserLogin.parse_args();
-    return {'I dont know you':'And I dont care to know you'};
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    cur=conn.cursor();
+    cur.execute('select token from users where "usuario"=%s and "passwd"=%s',(args['user'],args['pass']));
+    if(cur.rowcount==0):
+      cur.close();
+      conn.close();
+      return {'I dont know you':'And I dont care to know you'},404;
+    else:
+      token = cur.fetchone()[0];
+      cur.close();
+      conn.close();
+      return {'token':token},200;
+  
   def post(self):
     """crea un nuevo username|pass en la base, y retorna el token asignado"""
     args = parserLogin.parse_args();
-    return {'I dont know you':'And I dont care to know you'};
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    cur=conn.cursor();
+    cur.execute('select token from Users where "usuario"=%s',(args['user'],));
+    if(cur.rowcount>0):
+      cur.close();
+      conn.close();
+      return {'Error':'Cuenta ya existe'},456;
+    else:
+      token = ''.join(random.choices(string.ascii_lowercase, k=29));
+      token = token + chr(11-hash(token)+ord('a'))
+      cur.execute('insert into Users values(%s,%s,%s)',(args['user'],args['pass'],token));
+      conn.commit();
+      cur.close();
+      conn.close();
+      return {'token':token},201;
 """----------------------------------------------------------------------------"""
 
 """----------------------------------------------------------------------------"""
@@ -182,5 +220,7 @@ api.add_resource(Recipe,'/recipe/info')
 api.add_resource(Filter,'/recipe/filter')
 api.add_resource(Login,'/login')
 
+#DATABASE_URL = os.environ['DATABASE_URL']
+DATABASE_URL = "postgres://gjdfftstillhri:f526e32b849bf31e858fd0ffb90ec477edb42888f3f4a3529165779c6cb7111e@ec2-50-19-114-27.compute-1.amazonaws.com:5432/dfeqo4r483r9kf"
 if __name__ == '__main__':
     app.run(debug=True)
