@@ -8,6 +8,32 @@
     android:orientation="vertical"
     tools:context=".RegisterActivity">
 
+    <Button
+        android:id="@+id/button_add_instruction"
+        android:layout_width="wrap_content"
+        android:layout_height="43dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/addInstruction"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextInstrucciones" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerViewIngredientes"
+        android:layout_width="105dp"
+        android:layout_height="104dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.819"
+        app:layout_constraintStart_toEndOf="@+id/editTextIngrediente"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTipo"
+        tools:itemCount="4" />
+
     <TextView
         android:id="@+id/recipeCreationTitleTextView"
         android:layout_width="wrap_content"
@@ -27,7 +53,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/name_register_activity"
+        android:id="@+id/editTextNombre"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -41,9 +67,9 @@
         app:layout_constraintTop_toBottomOf="@+id/recipeCreationTitleTextView" />
 
     <EditText
-        android:id="@+id/editText"
-        android:layout_width="152dp"
-        android:layout_height="46dp"
+        android:id="@+id/editTextTipo"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
@@ -53,13 +79,13 @@
         android:hint="@string/prompt_recipe_type"
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/name_register_activity"
+        app:layout_constraintStart_toEndOf="@+id/editTextNombre"
         app:layout_constraintTop_toBottomOf="@+id/recipeCreationTitleTextView" />
 
     <EditText
-        android:id="@+id/editText2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/editTextIngrediente"
+        android:layout_width="210dp"
+        android:layout_height="40dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
@@ -67,25 +93,25 @@
         android:hint="@string/prompt_recipe_ingredients"
         android:inputType="text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name_register_activity" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextNombre" />
 
     <EditText
-        android:id="@+id/editText3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/editTextInstrucciones"
+        android:layout_width="208dp"
+        android:layout_height="39dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
         android:hint="@string/prompt_recipe_instructions"
         android:inputType="text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText2" />
+        app:layout_constraintTop_toBottomOf="@+id/button_add_ingredient" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/image_slider"
-        android:layout_width="377dp"
-        android:layout_height="422dp"
+        android:layout_width="388dp"
+        android:layout_height="338dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
@@ -95,7 +121,7 @@
         app:layout_constraintBottom_toTopOf="@+id/button_cancelar_creacion"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText3" />
+        app:layout_constraintTop_toBottomOf="@+id/recyclerViewInstrucciones" />
 
     <Button
         android:id="@+id/boton_agregar_imagen"
@@ -103,21 +129,27 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:text="@string/addImage"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/button_cancelar_creacion"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/button_confirm_creation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginBottom="8dp"
         android:text="@string/crear_receta"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/button_cancelar_creacion" />
 
     <Button
         android:id="@+id/button_cancelar_creacion"
@@ -131,7 +163,32 @@
         android:text="@string/go_back"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button_confirm_creation"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/boton_agregar_imagen" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerViewInstrucciones"
+        android:layout_width="105dp"
+        android:layout_height="102dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.92"
+        app:layout_constraintStart_toEndOf="@+id/editTextInstrucciones"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerViewIngredientes"
+        tools:itemCount="4" />
+
+    <Button
+        android:id="@+id/button_add_ingredient"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/addIngredient"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextIngrediente" />
 
 </android.support.constraint.ConstraintLayout>

@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -16,7 +17,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.AppCompat.Light">
-        <activity android:name=".Recipes"></activity>
+        <activity android:name=".BusquedasRecetas"></activity>
+        <activity android:name=".Recipes" />
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name">
@@ -29,8 +31,7 @@
         <activity android:name=".RegisterActivity" />
         <activity android:name=".UserHome" />
         <activity android:name=".AgregarReceta" />
-        <activity android:name=".DetallesReceta" />"
-        <!-- Para manejo de archivos -->
+        <activity android:name=".DetallesReceta" /> <!-- Para manejo de archivos -->
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"

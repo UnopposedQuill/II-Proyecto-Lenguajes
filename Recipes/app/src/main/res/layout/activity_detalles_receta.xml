@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:gravity="center"
         android:text="@string/detailed_title"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
@@ -24,11 +24,12 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/name_register_activity"
+        android:id="@+id/textViewNombre"
         android:layout_width="256dp"
         android:layout_height="46dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:autofillHints=""
@@ -38,27 +39,28 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/recipeCreationTitleTextView"
-        tools:layout_editor_absoluteY="16dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/editText"
-        android:layout_width="152dp"
-        android:layout_height="46dp"
+        android:id="@+id/textViewTipo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:ems="10"
         android:hint="@string/prompt_recipe_type"
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/editText2"
-        tools:layout_editor_absoluteY="72dp" />
+        app:layout_constraintStart_toEndOf="@+id/textViewIngrediente"
+        app:layout_constraintTop_toBottomOf="@+id/textViewNombre" />
 
     <TextView
-        android:id="@+id/editText2"
-        android:layout_width="174dp"
-        android:layout_height="31dp"
+        android:id="@+id/textViewIngrediente"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
@@ -69,9 +71,9 @@
         app:layout_constraintTop_toBottomOf="@+id/recipeCreationTitleTextView" />
 
     <TextView
-        android:id="@+id/editText3"
-        android:layout_width="164dp"
-        android:layout_height="27dp"
+        android:id="@+id/textViewInstrucciones"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="16dp"
@@ -83,7 +85,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.016"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText2" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewIngrediente" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/image_slider"
@@ -99,7 +101,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText3" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewInstrucciones" />
 
     <Button
         android:id="@+id/button_terminar_detalle"
