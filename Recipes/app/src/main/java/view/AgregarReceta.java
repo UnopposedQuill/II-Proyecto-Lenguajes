@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -22,20 +23,25 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.Permission;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,6 +49,8 @@ import java.util.Map;
 import model.ImageAdapter;
 import model.ParameterStringBuilder;
 import model.Receta;
+
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
 public class AgregarReceta extends AppCompatActivity {
 
@@ -56,6 +64,7 @@ public class AgregarReceta extends AppCompatActivity {
     //Código para petición de uso de cámara, código para tomar una foto con cámara y código para
     //tomar una foto de galería respectivamente
     private final int CAMERA_PERMISSION = 100;
+    private final int READ_EXTERNAL_PERMISSION_CODE = 101;
     private final int PHOTO_CODE = 100;
     private final int SELECT_PICTURE = 200;
 
@@ -182,7 +191,7 @@ public class AgregarReceta extends AppCompatActivity {
                 EditText editTextIngrediente = findViewById(R.id.editTextIngrediente);
                 String texto = editTextIngrediente.getText().toString();
                 if(!texto.equals("")) {
-                    adaptadorStringsIngredientes.addData(editTextIngrediente.getText().toString());
+                    adaptadorStringsIngredientes.addData(editTextIngrediente.getText().toString().trim());
                     editTextIngrediente.setText("");
                 }
             }
@@ -197,12 +206,31 @@ public class AgregarReceta extends AppCompatActivity {
                 EditText editTextInstruccion = findViewById(R.id.editTextInstrucciones);
                 String texto = editTextInstruccion.getText().toString();
                 if(!texto.equals("")) {
-                    adaptadorStringsInstrucciones.addData(editTextInstruccion.getText().toString());
+                    adaptadorStringsInstrucciones.addData(editTextInstruccion.getText().toString().trim());
                     editTextInstruccion.setText("");
                 }
             }
         });
 
+        mayRequestReading();
+
+    }
+
+    private boolean mayRequestReading() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+        if (checkSelfPermission(READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        if (shouldShowRequestPermissionRationale(READ_EXTERNAL_STORAGE)) {
+            // TODO: alert the user with a Snackbar/AlertDialog giving them the permission rationale
+            // To use the Snackbar from the design support library, ensure that the activity extends
+            // AppCompatActivity and uses the Theme.AppCompat theme.
+        } else {
+            requestPermissions(new String[]{READ_EXTERNAL_STORAGE}, READ_EXTERNAL_PERMISSION_CODE);
+        }
+        return false;
     }
 
     /**
@@ -230,6 +258,7 @@ public class AgregarReceta extends AppCompatActivity {
                     imageView.setImageURI(path);
                     image_adapter.addView(imageView);
                     image_paths.add(path);
+                    image_adapter.notifyDataSetChanged();
                 }
                 break;
             }
@@ -267,6 +296,7 @@ public class AgregarReceta extends AppCompatActivity {
                     con.setReadTimeout(5000);
 
                     if (con.getResponseCode() == 201) {
+
                         parameters = new HashMap<>();
                         parameters.put("token", token);
                         parameters.put("nombre", receta.getNombre());
@@ -285,6 +315,8 @@ public class AgregarReceta extends AppCompatActivity {
                         if (con.getResponseCode() == 200) {
                             return true;
                         }
+
+                        return false;
                     }
                     return false;
 
