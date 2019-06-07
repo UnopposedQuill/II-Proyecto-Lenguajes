@@ -22,9 +22,9 @@ parserReceta = reqparse.RequestParser(); #parser del input
 parserReceta.add_argument('nombre');
 parserReceta.add_argument('tipo');
 parserReceta.add_argument('ingrediente');
-parserReceta.add_argument('ingredientes',action='append');
-parserReceta.add_argument('pasos',action='append');
-parserReceta.add_argument('imagen',action='append');
+parserReceta.add_argument('ingredientes');
+parserReceta.add_argument('pasos');
+parserReceta.add_argument('imagen');
 parserReceta.add_argument('token',required=True);
 
 #parser para la informacion del login
@@ -105,14 +105,16 @@ class Recipe(Resource):
     if not existe:
       return {'Error':'Receta no existente'},401;
     if(ingre!=None):
+      ingre = ingre.split(';');
       for ing in ingre:
         print(ing);
         PrologCallWRP('escribirClausula(ingrediente("'+ing+'")).',[]);
         PrologCallWRP('escribirClausula(ingredienteReceta("'+ing+'","'+nombre+'")).',[]);
     if(pasos!=None):
-      lista = '["'+'","'.join(pasos)+'"]'
-      PrologCallWRP('escribirClausula(listaPasos('+lista+',"'+nombre+'")).',[])
+      print(pasos);
+      PrologCallWRP('escribirClausula(listaPasos('+pasos+',"'+nombre+'")).',[])
     if(img):
+      img = img.split(';');
       for im in img: 
         print(im);
         PrologCallWRP('escribirClausula(listaImagenes("'+im+'","'+nombre+'")).',[]);
@@ -137,7 +139,7 @@ class Recipe(Resource):
       return {'Error':'Receta ya existente'},833;
     tipo = args['tipo']
     PrologCallWRP('escribirClausula(receta("'+nombre+'","'+tipo+'")).',[])
-    return {nombre:tipo},200
+    return {nombre:tipo},201
 """----------------------------------------------------------------------------"""
 
 """----------------------------------------------------------------------------"""
