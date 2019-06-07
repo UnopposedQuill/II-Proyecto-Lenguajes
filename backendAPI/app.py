@@ -197,6 +197,10 @@ class Login(Resource):
     args = parserLogin.parse_args();
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cur=conn.cursor();
+    token = ''.join(random.choices(string.ascii_lowercase, k=29));
+    token = token + chr(11-hash(token)+ord('a'))
+    cur.execute('update users set "token"=%s where "usuario"=%s and "passwd"=%s',(token,args['user'],args['pass']));
+    cur.commit();
     cur.execute('select token from users where "usuario"=%s and "passwd"=%s',(args['user'],args['pass']));
     if(cur.rowcount==0):
       cur.close();
@@ -208,6 +212,17 @@ class Login(Resource):
       conn.close();
       return {'token':token},200;
   
+  def put(self):
+    args = parserReceta.parse_args();
+    if( not CheckToken(args['token'])): return {"Error": 'Token invalido'};
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    cur=conn.cursor();
+    cur.execute('update users set "token" = "none" where "token"=%s',(args['token'],));
+    cur.commit();
+    cur.close();
+    conn.close();
+    return {'I dont know you':'And I dont care to know you'},200;
+
   def post(self):
     """crea un nuevo username|pass en la base, y retorna el token asignado"""
     args = parserLogin.parse_args();
