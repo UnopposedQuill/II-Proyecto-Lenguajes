@@ -44,17 +44,17 @@ public class Receta {
     public String ingredientesToString(){
         StringBuilder result = new StringBuilder();
         for(String ingrediente:this.ingredientes){
-            result.append(ingrediente).append(", ");
+            result.append(ingrediente).append(";");
         }
-        return result.toString().replace(", ", "");
+        return result.substring(0, result.length()-1);
     }
 
     public String instructionsToString(){
         StringBuilder result = new StringBuilder("[");
         for(String instruction:this.instrucciones){
-            result.append(instruction).append(", ");
+            result.append("\"").append(instruction).append("\", ");
         }
-        return result.toString().replace(", ", "").concat("]");
+        return result.substring(0, result.length()-1).concat("]");
     }
 
     public String imagenesToString(){
@@ -62,6 +62,6 @@ public class Receta {
         for(Uri imagen:this.imagenes){
             result.append(imagen.toString()).append(", ");
         }
-        return result.toString().replace(", ", "");
+        return result.substring(0, result.length()-1).concat("]");
     }
 }
