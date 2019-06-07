@@ -65,7 +65,7 @@ class Recipe(Resource):
     """
     args = parserReceta.parse_args();
     if( not CheckToken(args['token']) ): return {'Error':'token invalido'};
-    if(args['nombre']==None): return{'Error':'nombre es campo requerido'};
+    if(args['nombre']==None): return{'Error':'nombre es campo requerido'},401;
     nombre = '"'+args['nombre']+'"';
     data = {}; envio = {'nombre':args['nombre']};
     PrologCallWRP('infoReceta('+nombre+',I,T,P,L).',['I','T','P','L']);
@@ -78,7 +78,7 @@ class Recipe(Resource):
       envio['pasos']=receta['P'];
       envio['tipo']=receta['T'];
       envio['imagenes']=receta['L'];
-    if(existe): return envio;
+    if(existe): return envio,200;
     else: return {'Error':'Receta invalida'},404;
 
   def put(self):
@@ -87,8 +87,8 @@ class Recipe(Resource):
     """modifica la informacion de la receta con el nombre"""
     """TODO: que no permita modificar recetas no existentes"""
     args = parserReceta.parse_args();
-    if( not CheckToken(args['token']) ): return {'Error':'token invalido'};
-    if(args['nombre']==None): return {'message':'nombre es campo requrido'};
+    if( not CheckToken(args['token']) ): return {'Error':'token invalido'},401;
+    if(args['nombre']==None): return {'message':'nombre es campo requrido'},401;
     nombre = args['nombre'];
     ingre = args['ingredientes'];
     pasos = args['pasos'];
@@ -103,7 +103,7 @@ class Recipe(Resource):
         if receta:
           existe = True;
     if not existe:
-      return {'Error':'Receta no existente'};
+      return {'Error':'Receta no existente'},401;
     if(ingre!=None):
       for ing in ingre:
         print(ing);
@@ -116,12 +116,12 @@ class Recipe(Resource):
       for im in img: 
         print(im);
         PrologCallWRP('escribirClausula(listaImagenes("'+im+'","'+nombre+'")).',[]);
-    return {'Message':'Receta modificada existosamente'};
+    return {'Message':'Receta modificada existosamente'},200;
 
   def post(self):
     #curl localhost:5000/recipe/info -dnombre="nmbre" -dtipo="Tipo" -XPOST
     args = parserReceta.parse_args();
-    if( not CheckToken(args['token']) ): return {'Error':'token invalido'};
+    if( not CheckToken(args['token']) ): return {'Error':'token invalido'},401;
     if(args['nombre']==None or args['tipo']==None):
       return {'message':'nombre y tipo son requeridos'},891;
     nombre = args['nombre']
@@ -137,7 +137,7 @@ class Recipe(Resource):
       return {'Error':'Receta ya existente'},833;
     tipo = args['tipo']
     PrologCallWRP('escribirClausula(receta("'+nombre+'","'+tipo+'")).',[])
-    return {nombre:tipo}
+    return {nombre:tipo},200
 """----------------------------------------------------------------------------"""
 
 """----------------------------------------------------------------------------"""
@@ -146,12 +146,12 @@ class Recipes(Resource):
     #curl localhost:5000/recipe -XGET
     """Retorna una lista de todas las recetas"""
     args = parserReceta.parse_args();
-    if( not CheckToken(args['token']) ): return {'Error':'token invalido'};
+    if( not CheckToken(args['token']) ): return {'Error':'token invalido'},401;
     PrologCallWRP('receta(X,Y)',['X','Y'])
     data = {}; envio = [];
     with open('data.json') as infile: data = json.load(infile)
     for receta in data: envio.append(receta['X']);
-    return {'recetas':envio};
+    return {'recetas':envio},200;
 """----------------------------------------------------------------------------"""
 
 
@@ -159,7 +159,7 @@ class Recipes(Resource):
 class Filter(Resource):
   def get(self):
     args = parserReceta.parse_args();
-    if( not CheckToken(args['token']) ): return {'Error':'token invalido'};
+    if( not CheckToken(args['token']) ): return {'Error':'token invalido'},401;
     request='recetas(';
     query=[];
     if(args['nombre']):
@@ -186,7 +186,7 @@ class Filter(Resource):
       if(not args['nombre']): nombre = receta['R'];
       else: nombre = args['nombre'];
       envio.append(nombre) if nombre not in envio else envio;
-    return {'result':envio};
+    return {'result':envio},200;
 """----------------------------------------------------------------------------"""
 
 """----------------------------------------------------------------------------"""
@@ -196,11 +196,11 @@ class Login(Resource):
     """retorna el token para un username|password existente, o eror en otro caso"""
     args = parserLogin.parse_args();
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-    cur=conn.cursor();
+    cur = conn.cursor();
     token = ''.join(random.choices(string.ascii_lowercase, k=29));
-    token = token + chr(11-hash(token)+ord('a'))
+    token = token + chr(11-hash(token)+ord('a'));
     cur.execute('update users set "token"=%s where "usuario"=%s and "passwd"=%s',(token,args['user'],args['pass']));
-    cur.commit();
+    conn.commit();
     cur.execute('select token from users where "usuario"=%s and "passwd"=%s',(args['user'],args['pass']));
     if(cur.rowcount==0):
       cur.close();
@@ -214,11 +214,12 @@ class Login(Resource):
   
   def put(self):
     args = parserReceta.parse_args();
-    if( not CheckToken(args['token'])): return {"Error": 'Token invalido'};
+    if( not CheckToken(args['token'])):
+      return {'Error': 'Token invalido'};
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-    cur=conn.cursor();
-    cur.execute('update users set "token" = "none" where "token"=%s',(args['token'],));
-    cur.commit();
+    cur = conn.cursor();
+    cur.execute('update users set "token" = %s where "token"=%s',("none",args['token']));
+    conn.commit();
     cur.close();
     conn.close();
     return {'I dont know you':'And I dont care to know you'},200;
