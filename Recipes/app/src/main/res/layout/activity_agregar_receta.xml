@@ -27,7 +27,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/name_register_activity"
+        android:id="@+id/textViewNombre"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -41,7 +41,7 @@
         app:layout_constraintTop_toBottomOf="@+id/recipeCreationTitleTextView" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/textViewTipo"
         android:layout_width="152dp"
         android:layout_height="46dp"
         android:layout_marginStart="8dp"
@@ -53,11 +53,11 @@
         android:hint="@string/prompt_recipe_type"
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/name_register_activity"
+        app:layout_constraintStart_toEndOf="@+id/textViewNombre"
         app:layout_constraintTop_toBottomOf="@+id/recipeCreationTitleTextView" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/textViewIngrediente"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -67,10 +67,10 @@
         android:hint="@string/prompt_recipe_ingredients"
         android:inputType="text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name_register_activity" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewNombre" />
 
     <EditText
-        android:id="@+id/editText3"
+        android:id="@+id/textViewInstrucciones"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -80,7 +80,7 @@
         android:hint="@string/prompt_recipe_instructions"
         android:inputType="text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText2" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewIngrediente" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/image_slider"
@@ -95,7 +95,7 @@
         app:layout_constraintBottom_toTopOf="@+id/button_cancelar_creacion"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText3" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewInstrucciones" />
 
     <Button
         android:id="@+id/boton_agregar_imagen"
@@ -103,21 +103,27 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:text="@string/addImage"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/button_cancelar_creacion"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/button_confirm_creation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginBottom="8dp"
         android:text="@string/crear_receta"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/button_cancelar_creacion" />
 
     <Button
         android:id="@+id/button_cancelar_creacion"
@@ -131,7 +137,6 @@
         android:text="@string/go_back"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button_confirm_creation"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/boton_agregar_imagen" />
 
 </android.support.constraint.ConstraintLayout>

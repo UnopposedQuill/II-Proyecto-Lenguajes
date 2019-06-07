@@ -17,7 +17,7 @@ public class RegisterActivity extends AppCompatActivity {
 
 
         Button registerButtonActivity = (Button) findViewById(R.id.button_crear_receta);
-        final EditText registerName = (EditText)findViewById(R.id.name_register_activity);
+        final EditText registerName = (EditText)findViewById(R.id.textViewNombre);
         final EditText registerEmail = (EditText)findViewById(R.id.email_register_activity);
         final EditText registerPass = (EditText)findViewById(R.id.password_register_activity);
 

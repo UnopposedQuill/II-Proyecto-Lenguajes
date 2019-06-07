@@ -50,7 +50,8 @@ public class UserHome extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //@TODO: Hacer que redirija a una versión especializada de la que muestra todas las recetas
-                System.out.println("Non implemented yet");
+                Intent intent = new Intent(v.getContext(), BusquedasRecetas.class);
+                startActivityForResult(intent, CODIGO_USER_HOME);
             }
         });
     }

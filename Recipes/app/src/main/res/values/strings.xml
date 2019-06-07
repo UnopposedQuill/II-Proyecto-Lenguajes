@@ -47,6 +47,15 @@
     <!-- Strings related to Recipe Detail Activity -->
     <string name="detailed_title">Receta:</string>
 
+
+    <!-- Strings related to Recipe Searches Activity -->
+    <string name="search_title">Búsquedas</string>
+    <string name="search_button">Buscar</string>
+    <string name="entry_tooltip">Valor de Búsqueda</string>
+    <string name="radio_nombre">Nombre</string>
+    <string name="radio_tipo">Tipo</string>
+    <string name="radio_ingrediente">Ingrediente</string>
+
     <!-- Strings needed all along the project -->
     <string name="go_back">Volver</string>
 

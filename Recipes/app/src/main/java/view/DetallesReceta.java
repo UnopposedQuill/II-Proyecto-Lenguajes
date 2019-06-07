@@ -20,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,16 +34,29 @@ public class DetallesReceta extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_agregar_receta);
+        setContentView(R.layout.activity_detalles_receta);
+
+
 
         //Primero consigo la información que vino junto con el intento
-        Bundle bundle = getIntent().getExtras();
-        Receta receta = (Receta) bundle.get("RECETA");
+        String nombreReceta = getIntent().getExtras().getString("NOMBRE_RECETA", "NOT FOUND");
 
+        /*
         if(receta == null){
             System.err.println("No se le pasó ninguna receta al activity de detalle");
             finish();
         }
+        */
+
+        TextView textViewNombre = findViewById(R.id.textViewNombre);
+        TextView textViewTipo = findViewById(R.id.textViewTipo);
+        TextView textViewInstrucciones = findViewById(R.id.textViewInstrucciones);
+        TextView textViewIngredientes = findViewById(R.id.textViewIngrediente);
+
+        textViewNombre.setText(nombreReceta);
+        textViewTipo.setText("Tipo");
+        textViewInstrucciones.setText("Instrucciones");
+        textViewIngredientes.setText("Ingredientes");
 
         //primero creo el mostrador de imágenes
         //El mostrador de imágenes de la interfaz así como su adaptador de las imágenes a ImageViews
@@ -56,11 +70,13 @@ public class DetallesReceta extends AppCompatActivity {
         //Ahora la funcionalidad de cancelar
         final Button botonCancelar = findViewById(R.id.button_terminar_detalle);
 
+        /*
         for(int i = 0;i < receta.getImagenes().size();i++){
             ImageView imageView = new ImageView(this);
             imageView.setImageURI(receta.getImagenes().get(i));
             image_adapter.addView(imageView);
         }
+        */
 
         botonCancelar.setOnClickListener(new View.OnClickListener() {
             @Override
