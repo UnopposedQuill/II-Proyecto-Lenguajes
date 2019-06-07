@@ -12,6 +12,9 @@ import subprocess
 from flask import Flask
 from flask_restful import Resource, Api, reqparse
 
+DATABASE_URL = os.environ['DATABASE_URL']
+#DATABASE_URL = "postgres://gjdfftstillhri:f526e32b849bf31e858fd0ffb90ec477edb42888f3f4a3529165779c6cb7111e@ec2-50-19-114-27.compute-1.amazonaws.com:5432/dfeqo4r483r9kf"
+
 def PrologCallWRP(query,args): print(query); subprocess.call(['python3','execProlog.py',query]+args); return;
 
 parserReceta = reqparse.RequestParser(); #parser del input
@@ -39,6 +42,18 @@ def hash(sttt):
     s*=27;
   return s%11;
 
+def CheckToken(token):
+  if(hash(token)>0): return False;
+  ret = False;
+  conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+  cur=conn.cursor();
+  cur.execute('select * from Users where "token"=%s',(token,));
+  if(cur.rowcount>0):
+    ret = True;
+  cur.close();
+  conn.close();
+  return ret;
+
 """----------------------------------------------------------------------------"""
 class Recipe(Resource):
   def get(self):
@@ -49,6 +64,7 @@ class Recipe(Resource):
       'pasos' : [paso1, paso2, ...] }
     """
     args = parserReceta.parse_args();
+    if( not CheckToken(args['token']) ): return {'Error':'token invalido'};
     if(args['nombre']==None): return{'Error':'nombre es campo requerido'};
     nombre = '"'+args['nombre']+'"';
     data = {}; envio = {'nombre':args['nombre']};
@@ -71,6 +87,7 @@ class Recipe(Resource):
     """modifica la informacion de la receta con el nombre"""
     """TODO: que no permita modificar recetas no existentes"""
     args = parserReceta.parse_args();
+    if( not CheckToken(args['token']) ): return {'Error':'token invalido'};
     if(args['nombre']==None): return {'message':'nombre es campo requrido'};
     nombre = args['nombre'];
     ingre = args['ingredientes'];
@@ -104,6 +121,7 @@ class Recipe(Resource):
   def post(self):
     #curl localhost:5000/recipe/info -dnombre="nmbre" -dtipo="Tipo" -XPOST
     args = parserReceta.parse_args();
+    if( not CheckToken(args['token']) ): return {'Error':'token invalido'};
     if(args['nombre']==None or args['tipo']==None):
       return {'message':'nombre y tipo son requeridos'},891;
     nombre = args['nombre']
@@ -127,6 +145,8 @@ class Recipes(Resource):
   def get(self): 
     #curl localhost:5000/recipe -XGET
     """Retorna una lista de todas las recetas"""
+    args = parserReceta.parse_args();
+    if( not CheckToken(args['token']) ): return {'Error':'token invalido'};
     PrologCallWRP('receta(X,Y)',['X','Y'])
     data = {}; envio = [];
     with open('data.json') as infile: data = json.load(infile)
@@ -139,7 +159,7 @@ class Recipes(Resource):
 class Filter(Resource):
   def get(self):
     args = parserReceta.parse_args();
-    if(hash(token)>0): return {'error':'token invalido'};
+    if( not CheckToken(args['token']) ): return {'Error':'token invalido'};
     request='recetas(';
     query=[];
     if(args['nombre']):
@@ -220,7 +240,5 @@ api.add_resource(Recipe,'/recipe/info')
 api.add_resource(Filter,'/recipe/filter')
 api.add_resource(Login,'/login')
 
-#DATABASE_URL = os.environ['DATABASE_URL']
-DATABASE_URL = "postgres://gjdfftstillhri:f526e32b849bf31e858fd0ffb90ec477edb42888f3f4a3529165779c6cb7111e@ec2-50-19-114-27.compute-1.amazonaws.com:5432/dfeqo4r483r9kf"
 if __name__ == '__main__':
     app.run(debug=True)
